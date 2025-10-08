@@ -1,55 +1,55 @@
 import { Request, Response } from 'express';
-import User from '../models/user-model';
-import { IUser } from '../type/bdd-type';
+import Tag from '../models/tag-model';
+import { ITag } from '../type/bdd-type';
 
-const getAllUsers = (req: Request, res: Response) => {
+const getAllTags = (req: Request, res: Response) => {
   try {
-    const users = User.getAll();
-    res.json(users);
+    const tags = Tag.getAll();
+    res.json(tags);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 };
 
-const getUserById = (req: Request, res: Response) => {
+const getTagById = (req: Request, res: Response) => {
   try {
     const id = Number(req.query.id);
     if (!id) return res.status(400).json({ error: 'ID manquant' });
-    const user = User.getById(id);
-    if (!user) return res.status(404).json({ error: 'Utilisateur non trouvé' });
-    res.json(user);
+    const tag = Tag.getById(id);
+    if (!tag) return res.status(404).json({ error: 'Tag non trouvé' });
+    res.json(tag);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 };
 
-const createUser = (req: Request, res: Response) => {
+const createTag = (req: Request, res: Response) => {
   try {
-    const userData: IUser = req.body;
-    const newUser = User.create(userData);
-    res.status(201).json(newUser);
+    const tagData: ITag = req.body;
+    const newTag = Tag.create(tagData);
+    res.status(201).json(newTag);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 };
 
-const updateUser = (req: Request, res: Response) => {
+const updateTag = (req: Request, res: Response) => {
   try {
     const id = Number(req.query.id);
     if (!id) return res.status(400).json({ error: 'ID manquant' });
-    const userData: IUser = req.body;
-    const updated = User.update(id, userData);
+    const tagData: ITag = req.body;
+    const updated = Tag.update(id, tagData);
     res.json(updated);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 };
 
-const deleteUser = (req: Request, res: Response) => {
+const deleteTag = (req: Request, res: Response) => {
   try {
     const id = Number(req.query.id);
     if (!id) return res.status(400).json({ error: 'ID manquant' });
-    const deleted = User.delete(id);
+    const deleted = Tag.delete(id);
     res.json(deleted);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -57,9 +57,9 @@ const deleteUser = (req: Request, res: Response) => {
 };
 
 export default {
-  getAllUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser,
+  getAllTags,
+  getTagById,
+  createTag,
+  updateTag,
+  deleteTag,
 };
