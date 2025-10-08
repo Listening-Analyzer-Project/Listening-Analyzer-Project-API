@@ -2,58 +2,38 @@ import { Request, Response } from 'express';
 import Tag from '../../models/main-classes/tag-model';
 import { ITag } from '../../type/bdd-type';
 
-const getAllTags = (req: Request, res: Response) => {
-  try {
-    const tags = Tag.getAll();
+const getAllTags = async (req: Request, res: Response) => {
+    const tags = await Tag.getAll();
     res.json(tags);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
 };
 
-const getTagById = (req: Request, res: Response) => {
-  try {
-    const id = Number(req.query.id);
-    if (!id) return res.status(400).json({ error: 'ID manquant' });
-    const tag = Tag.getById(id);
-    if (!tag) return res.status(404).json({ error: 'Tag non trouvé' });
-    res.json(tag);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
+const getTagById = async (req: Request, res: Response) => {
+  const id = Number(req.query.id);
+  if (!id) throw { status: 400, message: 'ID manquant' };
+  const tag = await Tag.getById(id);
+  if (!tag) throw { status: 404, message: 'Tag non trouvé' };
+  res.json(tag);
 };
 
-const createTag = (req: Request, res: Response) => {
-  try {
-    const tagData: ITag = req.body;
-    const newTag = Tag.create(tagData);
-    res.status(201).json(newTag);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
+const createTag = async (req: Request, res: Response) => {
+  const tagData: ITag = req.body;
+  const newTag = await Tag.create(tagData);
+  res.status(201).json(newTag);
 };
 
-const updateTag = (req: Request, res: Response) => {
-  try {
-    const id = Number(req.query.id);
-    if (!id) return res.status(400).json({ error: 'ID manquant' });
-    const tagData: ITag = req.body;
-    const updated = Tag.update(id, tagData);
-    res.json(updated);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
+const updateTag = async (req: Request, res: Response) => {
+  const id = Number(req.query.id);
+  if (!id) throw { status: 400, message: 'ID manquant' };
+  const tagData: ITag = req.body;
+  const updated = await Tag.update(id, tagData);
+  res.json(updated);
 };
 
-const deleteTag = (req: Request, res: Response) => {
-  try {
-    const id = Number(req.query.id);
-    if (!id) return res.status(400).json({ error: 'ID manquant' });
-    const deleted = Tag.delete(id);
-    res.json(deleted);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
+const deleteTag = async (req: Request, res: Response) => {
+  const id = Number(req.query.id);
+  if (!id) throw { status: 400, message: 'ID manquant' };
+  const deleted = await Tag.delete(id);
+  res.json(deleted);
 };
 
 export default {

@@ -1,32 +1,29 @@
-import db from '../../database';
 import { IUser } from '../../type/bdd-type';
+import { queryAll, queryOne, runQuery } from '../../utils/db-helpers';
 
 const User = {
-  getAll: () => {
-    const stmt = db.prepare('SELECT * FROM user');
-    return stmt.all(); // renvoie directement un tableau
-  },
+  getAll: () => queryAll<IUser>('SELECT * FROM user'),
 
-  getById: (id : number) => {
-    const stmt = db.prepare('SELECT * FROM user WHERE id = ?');
-    return stmt.get(id); // renvoie directement un objet ou undefined
-  },
+  getById: (id: number) => queryOne<IUser>('SELECT * FROM user WHERE id = ?', [id]),
 
   create: (user: IUser) => {
-    const stmt = db.prepare('INSERT INTO user (name, type, isadmin) VALUES (?, ?, ?)');
-    const info = stmt.run(user.name, user.type, user.isadmin); // renvoie info.lastInsertRowid
+    const info = runQuery(
+      'INSERT INTO user (name, type, isadmin) VALUES (?, ?, ?)',
+      [user.name, user.type, user.isadmin]
+    );
     return { id: info.lastInsertRowid };
   },
 
   update: (id: number, user: IUser) => {
-    const stmt = db.prepare('UPDATE user SET name = ?, type = ?, isadmin = ? WHERE id = ?');
-    const info = stmt.run(user.name, user.type, user.isadmin, id);
+    const info = runQuery(
+      'UPDATE user SET name = ?, type = ?, isadmin = ? WHERE id = ?',
+      [user.name, user.type, user.isadmin, id]
+    );
     return { changes: info.changes };
   },
 
   delete: (id: number) => {
-    const stmt = db.prepare('DELETE FROM user WHERE id = ?');
-    const info = stmt.run(id);
+    const info = runQuery('DELETE FROM user WHERE id = ?', [id]);
     return { changes: info.changes };
   },
 };

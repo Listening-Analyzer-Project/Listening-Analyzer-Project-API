@@ -2,58 +2,38 @@ import { Request, Response } from 'express';
 import User from '../../models/main-classes/user-model';
 import { IUser } from '../../type/bdd-type';
 
-const getAllUsers = (req: Request, res: Response) => {
-  try {
-    const users = User.getAll();
-    res.json(users);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
+const getAllUsers = async (req: Request, res: Response) => {
+  const users = await User.getAll();
+  res.json(users);
 };
 
-const getUserById = (req: Request, res: Response) => {
-  try {
-    const id = Number(req.query.id);
-    if (!id) return res.status(400).json({ error: 'ID manquant' });
-    const user = User.getById(id);
-    if (!user) return res.status(404).json({ error: 'Utilisateur non trouvé' });
-    res.json(user);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
+const getUserById = async (req: Request, res: Response) => {
+  const id = Number(req.query.id);
+  if (!id) throw { status: 400, message: 'ID manquant' };
+  const user = await User.getById(id);
+  if (!user) throw { status: 404, message: 'Utilisateur non trouvé' };
+  res.json(user);
 };
 
-const createUser = (req: Request, res: Response) => {
-  try {
-    const userData: IUser = req.body;
-    const newUser = User.create(userData);
-    res.status(201).json(newUser);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
+const createUser = async (req: Request, res: Response) => {
+  const userData: IUser = req.body;
+  const newUser = await User.create(userData);
+  res.status(201).json(newUser);
 };
 
-const updateUser = (req: Request, res: Response) => {
-  try {
-    const id = Number(req.query.id);
-    if (!id) return res.status(400).json({ error: 'ID manquant' });
-    const userData: IUser = req.body;
-    const updated = User.update(id, userData);
-    res.json(updated);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
+const updateUser = async (req: Request, res: Response) => {
+  const id = Number(req.query.id);
+  if (!id) throw { status: 400, message: 'ID manquant' };
+  const userData: IUser = req.body;
+  const updated = await User.update(id, userData);
+  res.json(updated);
 };
 
-const deleteUser = (req: Request, res: Response) => {
-  try {
-    const id = Number(req.query.id);
-    if (!id) return res.status(400).json({ error: 'ID manquant' });
-    const deleted = User.delete(id);
-    res.json(deleted);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
+const deleteUser = async (req: Request, res: Response) => {
+  const id = Number(req.query.id);
+  if (!id) throw { status: 400, message: 'ID manquant' };
+  const deleted = await User.delete(id);
+  res.json(deleted);
 };
 
 export default {

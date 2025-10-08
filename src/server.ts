@@ -1,11 +1,6 @@
 import express from 'express';
-import userRoutes from './routes/main-classes/user-route';
-import albumRoutes from './routes/main-classes/album-route';
-import playlistRoutes from './routes/main-classes/playlist-route';
-import tagRoutes from './routes/main-classes/tag-routes';
-import categoryRoutes from './routes/main-classes/category-route';
-import countryRoutes from './routes/main-classes/country-route';
-import eventRoutes from './routes/main-classes/event-route';
+import routes from './routes';
+import { errorHandler } from './middleware/error-handler';
 
 const app = express();
 const port = 3001;
@@ -14,13 +9,10 @@ const port = 3001;
 app.use(express.json());
 
 // Routes
-app.use('/api/users', userRoutes);
-app.use('/api/albums', albumRoutes);
-app.use('/api/playlists', playlistRoutes);
-app.use('/api/tags', tagRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/countries', countryRoutes);
-app.use('/api/events', eventRoutes);
+app.use('/api', routes);
+
+// Middleware de gestion des erreurs
+app.use(errorHandler);
 
 // Route globale
 app.get('/', (req, res) => {

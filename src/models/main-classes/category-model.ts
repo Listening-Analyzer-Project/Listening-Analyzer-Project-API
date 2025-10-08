@@ -1,33 +1,24 @@
-import db from '../../database';
+import { queryAll, queryOne, runQuery } from '../../utils/db-helpers';
 import { ICategory } from '../../type/bdd-type';
 
 const Category = {
-  getAll: () => {
-    const stmt = db.prepare('SELECT * FROM category');
-    return stmt.all(); // renvoie directement un tableau
-  },
+  getAll: () => queryAll<ICategory>('SELECT * FROM category'),
 
-  getById: (id: number) => {
-    const stmt = db.prepare('SELECT * FROM category WHERE id = ?');
-    return stmt.get(id); // renvoie directement un objet ou undefined
-  },
+  getById: (id: number) => queryOne<ICategory>('SELECT * FROM category WHERE id = ?', [id]),
 
   create: (category: ICategory) => {
-    const stmt = db.prepare('INSERT INTO category (name) VALUES (?)');
-    const result = stmt.run(category.name);
-    return { id: result.lastInsertRowid, ...category };
+    const info = runQuery('INSERT INTO category (name) VALUES (?)', [category.name]);
+    return { id: info.lastInsertRowid, ...category };
   },
 
   update: (id: number, category: ICategory) => {
-    const stmt = db.prepare('UPDATE category SET name = ? WHERE id = ?');
-    stmt.run(category.name, id);
-    return { id, ...category };
+    const info = runQuery('UPDATE category SET name = ? WHERE id = ?', [category.name, id]);
+    return { changes: info.changes };
   },
 
   delete: (id: number) => {
-    const stmt = db.prepare('DELETE FROM category WHERE id = ?');
-    stmt.run(id);
-    return { id };
+    const info = runQuery('DELETE FROM category WHERE id = ?', [id]);
+    return { changes: info.changes };
   },
 };
 

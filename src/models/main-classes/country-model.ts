@@ -1,33 +1,24 @@
-import db from '../../database';
+import { queryAll, queryOne, runQuery } from '../../utils/db-helpers';
 import { ICountry } from '../../type/bdd-type';
 
 const Country = {
-  getAll: () => {
-    const stmt = db.prepare('SELECT * FROM country');
-    return stmt.all(); // renvoie directement un tableau
-  },
+  getAll: () => queryAll<ICountry>('SELECT * FROM country'),
 
-  getById: (id: number) => {
-    const stmt = db.prepare('SELECT * FROM country WHERE id = ?');
-    return stmt.get(id); // renvoie directement un objet ou undefined
-  },
+  getById: (id: number) => queryOne<ICountry>('SELECT * FROM country WHERE id = ?', [id]),
 
   create: (country: ICountry) => {
-    const stmt = db.prepare('INSERT INTO country (name) VALUES (?)');
-    const result = stmt.run(country.name);
-    return { id: result.lastInsertRowid, ...country };
+    const info = runQuery('INSERT INTO country (name) VALUES (?)', [country.name]);
+    return { id: info.lastInsertRowid, ...country };
   },
 
   update: (id: number, country: ICountry) => {
-    const stmt = db.prepare('UPDATE country SET name = ? WHERE id = ?');
-    stmt.run(country.name, id);
-    return { id, ...country };
+    const info = runQuery('UPDATE country SET name = ? WHERE id = ?', [country.name, id]);
+    return { changes: info.changes };
   },
 
   delete: (id: number) => {
-    const stmt = db.prepare('DELETE FROM country WHERE id = ?');
-    stmt.run(id);
-    return { id };
+    const info = runQuery('DELETE FROM country WHERE id = ?', [id]);
+    return { changes: info.changes };
   },
 };
 

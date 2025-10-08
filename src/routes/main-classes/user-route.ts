@@ -1,5 +1,6 @@
 import express from 'express';
 import UserController from '../../controllers/main-classes/user-controller';
+import { wrapRoutes } from '../../utils/wrapRoutes';
 
 const router = express.Router();
 
@@ -9,4 +10,4 @@ router.post('/', UserController.createUser);
 router.put('/', UserController.updateUser);
 router.delete('/', UserController.deleteUser);
 
-export default router;
+export default wrapRoutes(router);

@@ -1,26 +1,29 @@
-import db from '../../database';
+import { queryAll, queryOne, runQuery } from '../../utils/db-helpers';
 import { IPlaylist } from '../../type/bdd-type';
 
 const Playlist = {
-  getAll: () => {
-    const stmt = db.prepare('SELECT * FROM playlist');
-    return stmt.all(); // renvoie directement un tableau
-  },
-  getById: (id: number) => {
-    const stmt = db.prepare('SELECT * FROM playlist WHERE id = ?');
-    return stmt.get(id);
-  },
+  getAll: () => queryAll<IPlaylist>('SELECT * FROM playlist'),
+
+  getById: (id: number) => queryOne<IPlaylist>('SELECT * FROM playlist WHERE id = ?', [id]),
+
   create: (data: IPlaylist) => {
-    const stmt = db.prepare('INSERT INTO playlist (name, user_id) VALUES (?, ?)');
-    return stmt.run(data.name, data.user_id);
+    const info = runQuery(
+      'INSERT INTO playlist (name, user_id) VALUES (?, ?)',
+      [data.name, data.user_id]
+    );
+    return { id: info.lastInsertRowid, ...data };
   },
+
   update: (id: number, data: Partial<IPlaylist>) => {
-    const stmt = db.prepare('UPDATE playlist SET name = ?, user_id = ? WHERE id = ?');
-    return stmt.run(data.name, data.user_id, id);
+    const info = runQuery(
+      'UPDATE playlist SET name = ?, user_id = ? WHERE id = ?',
+      [data.name, data.user_id, id]
+    );
+    return { changes: info.changes };
   },
   delete: (id: number) => {
-    const stmt = db.prepare('DELETE FROM playlist WHERE id = ?');
-    return stmt.run(id);
+    const info = runQuery('DELETE FROM playlist WHERE id = ?', [id]);
+    return { changes: info.changes };
   },
 };
 

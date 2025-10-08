@@ -1,5 +1,6 @@
 import express from 'express';
 import TagController from '../../controllers/main-classes/tag-controller';
+import { wrapRoutes } from '../../utils/wrapRoutes';
 
 const router = express.Router();
 
@@ -9,4 +10,4 @@ router.post('/', TagController.createTag);
 router.put('/', TagController.updateTag);
 router.delete('/', TagController.deleteTag);
 
-export default router;
+export default wrapRoutes(router);

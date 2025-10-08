@@ -1,5 +1,6 @@
 import express from 'express';
 import AlbumController from '../../controllers/main-classes/album-controller';
+import { wrapRoutes } from '../../utils/wrapRoutes';
 
 const router = express.Router();
 
@@ -9,4 +10,4 @@ router.post('/', AlbumController.createAlbum);
 router.put('/', AlbumController.updateAlbum);
 router.delete('/', AlbumController.deleteAlbum);
 
-export default router;
+export default wrapRoutes(router);

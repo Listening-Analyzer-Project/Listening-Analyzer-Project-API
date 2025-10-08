@@ -1,5 +1,6 @@
 import express from 'express';
 import PlaylistController from '../../controllers/main-classes/playlist-controller';
+import { wrapRoutes } from '../../utils/wrapRoutes';
 
 const router = express.Router();
 
@@ -9,4 +10,4 @@ router.post('/', PlaylistController.createPlaylist);
 router.put('/', PlaylistController.updatePlaylist);
 router.delete('/', PlaylistController.deletePlaylist);
 
-export default router;
+export default wrapRoutes(router);

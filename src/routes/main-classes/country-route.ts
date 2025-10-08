@@ -1,5 +1,6 @@
 import express from 'express';
 import CountryController from '../../controllers/main-classes/country-controller';
+import { wrapRoutes } from '../../utils/wrapRoutes';
 
 const router = express.Router();
 
@@ -9,4 +10,4 @@ router.post('/', CountryController.createCountry);
 router.put('/', CountryController.updateCountry);
 router.delete('/', CountryController.deleteCountry);
 
-export default router;
+export default wrapRoutes(router);

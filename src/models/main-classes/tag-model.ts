@@ -1,32 +1,29 @@
-import db from '../../database';
+import { queryAll, queryOne, runQuery } from '../../utils/db-helpers';
 import { ITag } from '../../type/bdd-type';
 
 const Tag = {
-    getAll: () => {
-        const stmt = db.prepare('SELECT * FROM tag');
-        return stmt.all(); // renvoie directement un tableau
-    },
+    getAll: () => queryAll<ITag>('SELECT * FROM tag'),
 
-    getById: (id: number) => {
-        const stmt = db.prepare('SELECT * FROM tag WHERE id = ?');
-        return stmt.get(id); // renvoie directement un objet ou undefined
-    },
+    getById: (id: number) => queryOne<ITag>('SELECT * FROM tag WHERE id = ?', [id]),
 
     create: (tag: ITag) => {
-        const stmt = db.prepare('INSERT INTO tag (name) VALUES (?)');
-        const result = stmt.run(tag.name);
-        return { id: result.lastInsertRowid, ...tag };
+        const info = runQuery(
+            'INSERT INTO tag (name) VALUES (?)',
+            [tag.name]
+        );
+        return { id: info.lastInsertRowid, ...tag };
     },
 
     update: (id: number, tag: ITag) => {
-        const stmt = db.prepare('UPDATE tag SET name = ? WHERE id = ?');
-        stmt.run(tag.name, id);
+        const info = runQuery(
+            'UPDATE tag SET name = ? WHERE id = ?',
+            [tag.name, id]
+        );
         return { id, ...tag };
     },
 
     delete: (id: number) => {
-        const stmt = db.prepare('DELETE FROM tag WHERE id = ?');
-        stmt.run(id);
+        const info = runQuery('DELETE FROM tag WHERE id = ?', [id]);
         return { id };
     },
 };
