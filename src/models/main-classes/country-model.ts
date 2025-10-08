@@ -1,5 +1,5 @@
-import db from '../database';
-import { ICountry } from '../type/bdd-type';
+import db from '../../database';
+import { ICountry } from '../../type/bdd-type';
 
 const Country = {
   getAll: () => {

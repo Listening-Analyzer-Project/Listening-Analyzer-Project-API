@@ -1,5 +1,5 @@
-import db from '../database';
-import { ICategory } from '../type/bdd-type';
+import db from '../../database';
+import { ICategory } from '../../type/bdd-type';
 
 const Category = {
   getAll: () => {

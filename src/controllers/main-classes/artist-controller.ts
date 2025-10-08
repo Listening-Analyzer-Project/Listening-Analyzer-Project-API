@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import Artist from '../models/artist-model';
-import { IArtist } from '../type/bdd-type';
+import Artist from '../../models/main-classes/artist-model';
+import { IArtist } from '../../type/bdd-type';
 
 const getAllArtists = (req: Request, res: Response) => {
   try {

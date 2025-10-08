@@ -1,5 +1,5 @@
-import db from '../database';
-import { IUser } from '../type/bdd-type';
+import db from '../../database';
+import { IUser } from '../../type/bdd-type';
 
 const User = {
   getAll: () => {

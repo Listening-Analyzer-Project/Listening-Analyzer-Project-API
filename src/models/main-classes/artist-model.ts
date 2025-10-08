@@ -1,5 +1,5 @@
-import db from '../database';
-import { IArtist } from '../type/bdd-type';
+import db from '../../database';
+import { IArtist } from '../../type/bdd-type';
 
 const Artist = {
   getAll: () => {

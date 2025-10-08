@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import User from '../models/user-model';
-import { IUser } from '../type/bdd-type';
+import User from '../../models/main-classes/user-model';
+import { IUser } from '../../type/bdd-type';
 
 const getAllUsers = (req: Request, res: Response) => {
   try {

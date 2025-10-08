@@ -1,5 +1,5 @@
-import db from '../database';
-import { ITag } from '../type/bdd-type';
+import db from '../../database';
+import { ITag } from '../../type/bdd-type';
 
 const Tag = {
     getAll: () => {

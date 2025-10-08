@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import Country from '../models/country-model';
-import { ICountry } from '../type/bdd-type';
+import Country from '../../models/main-classes/country-model';
+import { ICountry } from '../../type/bdd-type';
 
 const getAllCountries = (req: Request, res: Response) => {
   try {

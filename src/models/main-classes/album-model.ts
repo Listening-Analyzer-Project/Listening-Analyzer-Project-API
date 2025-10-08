@@ -1,5 +1,5 @@
-import db from '../database';
-import { IAlbum } from '../type/bdd-type';
+import db from '../../database';
+import { IAlbum } from '../../type/bdd-type';
 
 const Album = {
   getAll: () => {

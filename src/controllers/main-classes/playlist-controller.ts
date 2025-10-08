@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import Playlist from '../models/playlist-model';
-import { IPlaylist } from '../type/bdd-type';
+import Playlist from '../../models/main-classes/playlist-model';
+import { IPlaylist } from '../../type/bdd-type';
 
 const getAllPlaylists = (req: Request, res: Response) => {
   try {

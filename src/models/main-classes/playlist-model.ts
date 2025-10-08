@@ -1,5 +1,5 @@
-import db from '../database';
-import { IPlaylist } from '../type/bdd-type';
+import db from '../../database';
+import { IPlaylist } from '../../type/bdd-type';
 
 const Playlist = {
   getAll: () => {

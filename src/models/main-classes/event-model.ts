@@ -1,5 +1,5 @@
-import db from '../database';
-import { IEvent } from '../type/bdd-type';
+import db from '../../database';
+import { IEvent } from '../../type/bdd-type';
 
 const Event = {
   getAll: () => {

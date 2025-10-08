@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import Event from '../models/event-model';
-import { IEvent } from '../type/bdd-type';
+import Event from '../../models/main-classes/event-model';
+import { IEvent } from '../../type/bdd-type';
 
 const getAllEvents = (req: Request, res: Response) => {
   try {

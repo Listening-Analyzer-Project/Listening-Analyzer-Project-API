@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import Tag from '../models/tag-model';
-import { ITag } from '../type/bdd-type';
+import Tag from '../../models/main-classes/tag-model';
+import { ITag } from '../../type/bdd-type';
 
 const getAllTags = (req: Request, res: Response) => {
   try {

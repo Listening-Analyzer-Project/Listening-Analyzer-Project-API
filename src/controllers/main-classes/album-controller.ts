@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { IAlbum } from '../type/bdd-type';
-import Album from '../models/album-model';
+import { IAlbum } from '../../type/bdd-type';
+import Album from '../../models/main-classes/album-model';
 
 const getAllAlbums = (req: Request, res: Response) => {
   try {

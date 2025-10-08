@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import Category from '../models/category-model';
-import { ICategory } from '../type/bdd-type';
+import Category from '../../models/main-classes/category-model';
+import { ICategory } from '../../type/bdd-type';
 
 const getAllCategories = (req: Request, res: Response) => {
   try {
