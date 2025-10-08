@@ -1,4 +1,4 @@
-import db from '../database';
+import db from '@/database';
 
 /**
  * Exécute une requête SELECT qui renvoie plusieurs lignes

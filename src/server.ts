@@ -1,6 +1,6 @@
 import express from 'express';
 import routes from './routes';
-import { errorHandler } from './middleware/error-handler';
+import { errorHandler } from '@/middleware';
 
 const app = express();
 const port = 3001;

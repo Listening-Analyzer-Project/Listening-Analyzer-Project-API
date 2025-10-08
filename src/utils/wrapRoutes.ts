@@ -1,5 +1,5 @@
 import { Router, RequestHandler } from 'express';
-import { asyncHandler } from '../middleware/async-handler';
+import { asyncHandler } from '@/middleware';
 
 /**
  * Enveloppe automatiquement toutes les routes d'un Router avec asyncHandler.

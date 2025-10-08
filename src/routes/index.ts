@@ -1,13 +1,13 @@
 import express from 'express';
-import userRoutes from './main-classes/user-route';
-import playlistRoutes from './main-classes/playlist-route';
-import artistRoutes from './main-classes/artist-route';
-import albumRoutes from './main-classes/album-route';
-import tagRoutes from './main-classes/tag-routes';
-import categoryRoutes from './main-classes/category-route';
-import countryRoutes from './main-classes/country-route';
-import eventRoutes from './main-classes/event-route';
-import geographicalRegionRoutes from './main-classes/geographical-region-route';
+import userRoutes from './core/user-route';
+import playlistRoutes from './core/playlist-route';
+import artistRoutes from './core/artist-route';
+import albumRoutes from './core/album-route';
+import tagRoutes from './core/tag-routes';
+import categoryRoutes from './core/category-route';
+import countryRoutes from './core/country-route';
+import eventRoutes from './core/event-route';
+import geographicalRegionRoutes from './core/geographical-region-route';
 
 const router = express.Router();
 

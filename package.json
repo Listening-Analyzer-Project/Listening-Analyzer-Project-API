@@ -8,7 +8,8 @@
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server",
     "init-db": "node scripts/init-db.js",
-    "build": "tsc"
+    "build": "tsc",
+    "generate-indexes": "barrelsby --directory src --delete --location all"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,7 @@
     "@types/express": "^5.0.3",
     "@types/node": "^24.6.1",
     "@types/sqlite3": "^5.1.0",
+    "barrelsby": "^2.8.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.20.6",
