@@ -18,7 +18,6 @@ export interface IPlaylist {
   user_id: number;
 }
 
-// TODO
 // =======================
 // Playlist_Track (table de liaison)
 // =======================
@@ -46,7 +45,6 @@ export interface ITag {
   name: string;
 }
 
-// TODO
 // =======================
 // Track_Tag (table de liaison)
 // =======================
