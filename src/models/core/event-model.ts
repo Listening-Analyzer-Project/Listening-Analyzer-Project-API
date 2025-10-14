@@ -8,16 +8,16 @@ const Event = {
 
   create: (event: IEvent) => {
     const info = runQuery(
-      'INSERT INTO event (start_date, end_date, category_id, user_id, description) VALUES (?, ?, ?, ?, ?)',
-      [event.start_date, event.end_date, event.category_id, event.user_id, event.description]
+      'INSERT INTO event (title, start_date, end_date, category_id, user_id, description) VALUES (?, ?, ?, ?, ?)',
+      [event.title, event.start_date, event.end_date, event.category_id, event.user_id, event.description]
     );
     return { id: info.lastInsertRowid };
   },
 
   update: (id: number, event: IEvent) => {
     const info = runQuery(
-      'UPDATE event SET start_date = ?, end_date = ?, category_id = ?, user_id = ?, description = ? WHERE id = ?',
-      [event.start_date, event.end_date, event.category_id, event.user_id, event.description, id]
+      'UPDATE event SET title = ?, start_date = ?, end_date = ?, category_id = ?, user_id = ?, description = ? WHERE id = ?',
+      [event.title, event.start_date, event.end_date, event.category_id, event.user_id, event.description, id]
     );
     return { changes: info.changes };
   },

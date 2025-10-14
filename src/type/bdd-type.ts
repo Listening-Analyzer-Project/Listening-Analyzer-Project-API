@@ -6,6 +6,7 @@ export interface IUser {
   name: string;
   type: number;
   isadmin: number; // 0 ou 1
+  syncro_status: number; // 0, 1 ou 2
 }
 
 // =======================
@@ -17,6 +18,7 @@ export interface IPlaylist {
   user_id: number;
 }
 
+// TODO
 // =======================
 // Playlist_Track (table de liaison)
 // =======================
@@ -44,6 +46,7 @@ export interface ITag {
   name: string;
 }
 
+// TODO
 // =======================
 // Track_Tag (table de liaison)
 // =======================
@@ -87,6 +90,7 @@ export interface ICountry {
 // =======================
 export interface IEvent {
   id?: number;
+  title: string;
   start_date: string;
   end_date: string;
   category_id?: number;

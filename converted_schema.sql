@@ -2,7 +2,8 @@ CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT UNIQUE NOT NULL,
   type INTEGER NOT NULL,
-  isadmin INTEGER NOT NULL
+  isadmin INTEGER NOT NULL,
+  syncro_status INTEGER NOT NULL
 );
 
 CREATE TABLE playlist (
@@ -66,6 +67,7 @@ CREATE TABLE countries (
 
 CREATE TABLE events (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
   start_date TEXT NOT NULL,
   end_date TEXT NOT NULL,
   category_id INTEGER,

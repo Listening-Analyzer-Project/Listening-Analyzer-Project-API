@@ -8,16 +8,16 @@ const User = {
 
   create: (user: IUser) => {
     const info = runQuery(
-      'INSERT INTO user (name, type, isadmin) VALUES (?, ?, ?)',
-      [user.name, user.type, user.isadmin]
+      'INSERT INTO user (name, type, isadmin, syncro_status) VALUES (?, ?, ?, ?)',
+      [user.name, user.type, user.isadmin, user.syncro_status]
     );
     return { id: info.lastInsertRowid };
   },
 
   update: (id: number, user: IUser) => {
     const info = runQuery(
-      'UPDATE user SET name = ?, type = ?, isadmin = ? WHERE id = ?',
-      [user.name, user.type, user.isadmin, id]
+      'UPDATE user SET name = ?, type = ?, isadmin = ?, syncro_status = ? WHERE id = ?',
+      [user.name, user.type, user.isadmin, user.syncro_status, id]
     );
     return { changes: info.changes };
   },
