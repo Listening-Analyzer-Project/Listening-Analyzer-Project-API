@@ -2,13 +2,13 @@ import { ITrack } from '@/type';
 import { queryAll, queryOne, runQuery } from '@/utils';
 
 const Track = {
-  getAll: () => queryAll<ITrack>('SELECT * FROM track'),
+  getAll: () => queryAll<ITrack>('SELECT * FROM tracks'),
 
-  getById: (id: number) => queryOne<ITrack>('SELECT * FROM track WHERE id = ?', [id]),
+  getById: (id: number) => queryOne<ITrack>('SELECT * FROM tracks WHERE id = ?', [id]),
 
   create: (track: ITrack) => {
     const info = runQuery(
-      `INSERT INTO track (
+      `INSERT INTO tracks (
         title, duration_ms, album_id, explicit, popularity, sub_genre_id,
         acousticness, danceability, energy, instrumentalness, key, liveness,
         loudness, mode, speechiness, tempo, time_signature, valence
@@ -39,7 +39,7 @@ const Track = {
 
   update: (id: number, track: ITrack) => {
     const info = runQuery(
-      `UPDATE track SET
+      `UPDATE tracks SET
         title = ?, duration_ms = ?, album_id = ?, explicit = ?, popularity = ?, sub_genre_id = ?,
         acousticness = ?, danceability = ?, energy = ?, instrumentalness = ?, key = ?, liveness = ?,
         loudness = ?, mode = ?, speechiness = ?, tempo = ?, time_signature = ?, valence = ?
@@ -70,7 +70,7 @@ const Track = {
   },
 
   delete: (id: number) => {
-    const info = runQuery('DELETE FROM track WHERE id = ?', [id]);
+    const info = runQuery('DELETE FROM tracks WHERE id = ?', [id]);
     return { changes: info.changes };
   },
 };

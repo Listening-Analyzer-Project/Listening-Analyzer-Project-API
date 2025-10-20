@@ -11,6 +11,8 @@ import geographicalRegionRoutes from './core/geographical-region-route';
 import genreRoute from './core/genre-route';
 import subGenreRoute from './core/sub-genre-route';
 import trackRoutes from './core/track-route';
+import listenRoute from './core/listen-route';
+
 import trackArtistRoutes from './relation/track-artist-route';
 import trackTagRoutes from './relation/track-tag-route';
 import playlistTrackRoute from './relation/playlist-track-route';
@@ -31,6 +33,9 @@ router.use('/geographical-regions', geographicalRegionRoutes);
 router.use('/genres', genreRoute);
 router.use('/sub-genres', subGenreRoute);
 router.use('/tracks', trackRoutes);
+router.use('/listens', listenRoute);
+
+// Routes de relations
 router.use('/track-artists', trackArtistRoutes);
 router.use('/track-tags', trackTagRoutes);
 router.use('/playlist-tracks', playlistTrackRoute);

@@ -2,13 +2,13 @@ import { ISubGenre } from '@/type';
 import { queryAll, queryOne, runQuery } from '@/utils';
 
 const SubGenre = {
-  getAll: () => queryAll<ISubGenre>('SELECT * FROM sub_genre'),
+  getAll: () => queryAll<ISubGenre>('SELECT * FROM sub_genres'),
 
-  getById: (id: number) => queryOne<ISubGenre>('SELECT * FROM sub_genre WHERE id = ?', [id]),
+  getById: (id: number) => queryOne<ISubGenre>('SELECT * FROM sub_genres WHERE id = ?', [id]),
 
   create: (subGenre: ISubGenre) => {
     const info = runQuery(
-      'INSERT INTO sub_genre (name, genre_id) VALUES (?, ?)',
+      'INSERT INTO sub_genres (name, genre_id) VALUES (?, ?)',
       [subGenre.name, subGenre.genre_id]
     );
     return { id: info.lastInsertRowid };
@@ -16,14 +16,14 @@ const SubGenre = {
 
   update: (id: number, subGenre: ISubGenre) => {
     const info = runQuery(
-      'UPDATE sub_genre SET name = ?, genre_id = ? WHERE id = ?',
+      'UPDATE sub_genres SET name = ?, genre_id = ? WHERE id = ?',
       [subGenre.name, subGenre.genre_id, id]
     );
     return { changes: info.changes };
   },
 
   delete: (id: number) => {
-    const info = runQuery('DELETE FROM sub_genre WHERE id = ?', [id]);
+    const info = runQuery('DELETE FROM sub_genres WHERE id = ?', [id]);
     return { changes: info.changes };
   },
 };
