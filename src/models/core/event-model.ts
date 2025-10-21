@@ -1,7 +1,11 @@
 import { queryAll, queryOne, runQuery } from '@/utils';
-import { IEvent } from '@/type';
+import { IEvent, IEventWithCategory } from '@/type';
 
 const Event = {
+
+  // =======================
+  // CRUD
+  // =======================
   getAll: () => queryAll<IEvent>('SELECT * FROM events'),
 
   getById: (id: number) => queryOne<IEvent>('SELECT * FROM events WHERE id = ?', [id]),
@@ -26,6 +30,50 @@ const Event = {
     const info = runQuery('DELETE FROM events WHERE id = ?', [id]);
     return { changes: info.changes };
   },
+
+  // =======================
+  // Additional Methods
+  // =======================
+
+  getAllWithCategory: ({
+    user_id,
+    category_id,
+    limit,
+    offset,
+  }: {
+    user_id?: number;
+    category_id?: number;
+    limit?: number;
+    offset?: number;
+  }): IEventWithCategory[] => {
+    let sql = `
+      SELECT
+        e.id,
+        e.title,
+        e.start_date,
+        e.end_date,
+        e.description,
+        e.user_id,
+        c.id AS "category.id",
+        c.name AS "category.name"
+      FROM events e
+      LEFT JOIN categories c ON e.category_id = c.id
+      WHERE 1=1
+      AND e.user_id = ?
+    `;
+    const params: any[] = [user_id];
+
+    if (category_id !== undefined) {
+      sql += ' AND e.category_id = ?';
+      params.push(category_id);
+    }
+
+    sql += ' ORDER BY e.start_date DESC LIMIT ? OFFSET ?';
+    params.push(limit, offset);
+
+    return queryAll<IEventWithCategory>(sql, params);
+  },
+
 };
 
 export default Event;
