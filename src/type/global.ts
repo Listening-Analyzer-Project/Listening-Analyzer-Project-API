@@ -1,3 +1,5 @@
+import { IGenre, ISubGenre } from "@/type";
+
 // =======================
 // Countries avec la geographical region associée
 // =======================
@@ -35,5 +37,9 @@ export interface ICountryWithRegionAndStats {
   geographical_region_name?: string | null;
   total_artists: number;
   total_listens: number;
+}
+
+export interface IGenreWithSubGenres extends IGenre {
+  sub_genres: ISubGenre[];
 }
 

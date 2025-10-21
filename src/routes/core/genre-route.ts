@@ -10,4 +10,6 @@ router.post('/', GenreController.createGenre);
 router.put('/', GenreController.updateGenre);
 router.delete('/', GenreController.deleteGenre);
 
+router.get('/withSubGenres', GenreController.getAllGenresWithSubGenres);
+
 export default wrapRoutes(router);

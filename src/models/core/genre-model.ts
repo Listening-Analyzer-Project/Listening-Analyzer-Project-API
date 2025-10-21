@@ -1,7 +1,12 @@
-import { IGenre } from '@/type';
+import { IGenre, IGenreWithSubGenres } from '@/type';
 import { queryAll, queryOne, runQuery } from '@/utils';
+import SubGenre from './sub-genre-model';
 
 const Genre = {
+
+  // =======================
+  // CRUD
+  // =======================
   getAll: () => queryAll<IGenre>('SELECT * FROM genres'),
 
   getById: (id: number) => queryOne<IGenre>('SELECT * FROM genres WHERE id = ?', [id]),
@@ -25,6 +30,20 @@ const Genre = {
   delete: (id: number) => {
     const info = runQuery('DELETE FROM genres WHERE id = ?', [id]);
     return { changes: info.changes };
+  },
+
+  // =======================
+  // Autres méthodes spécifiques
+  // =======================
+
+   getAllWithSubGenres: (): IGenreWithSubGenres[] => {
+    const genres = Genre.getAll();
+    const subGenres = SubGenre.getAll();
+
+    return genres.map((genre) => ({
+      ...genre,
+      sub_genres: subGenres.filter((sg) => sg.genre_id === genre.id),
+    }));
   },
 };
 
