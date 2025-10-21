@@ -1,9 +1,22 @@
 import { queryAll, queryOne, runQuery } from '@/utils';
-import { ICountry } from '@/type';
+import { ICountry, ICountryWithRegion  } from '@/type';
 
 const Country = {
   getAll: () => queryAll<ICountry>('SELECT * FROM countries'),
 
+   getAllWithRegion: (): ICountryWithRegion[] =>
+    queryAll<ICountryWithRegion>(`
+      SELECT
+        c.id,
+        c.name,
+        gr.id AS "geographical_region.id",
+        gr.name AS "geographical_region.name"
+      FROM countries c
+      LEFT JOIN geographical_regions gr
+        ON c.geographical_region_id = gr.id
+      ORDER BY c.name
+    `),
+    
   getById: (id: number) => queryOne<ICountry>('SELECT * FROM countries WHERE id = ?', [id]),
 
   create: (country: ICountry) => {

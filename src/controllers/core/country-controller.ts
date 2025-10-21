@@ -7,6 +7,11 @@ const getAllCountries = async (req: Request, res: Response) => {
     res.json(countries);
 };
 
+const getAllCountriesWithRegion = async (_req: Request, res: Response) => {
+  const countries = await Country.getAllWithRegion();
+  res.json(countries);
+};
+
 const getCountryById = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   if (!id) throw { status: 400, message: 'ID manquant' };
@@ -38,6 +43,7 @@ const deleteCountry = async (req: Request, res: Response) => {
 
 export default {
   getAllCountries,
+  getAllCountriesWithRegion,
   getCountryById,
   createCountry,
   updateCountry,
