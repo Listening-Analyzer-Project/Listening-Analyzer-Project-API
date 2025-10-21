@@ -49,6 +49,11 @@ const getAllCountriesWithRegion = async (_req: Request, res: Response) => {
   res.json(countries);
 };
 
+const getCountriesWithRegionAndStats = (req: Request, res: Response) => {
+  const countries = Country.getWithRegionAndStats();
+  res.json(countries);
+};
+
 export default {
   getAllCountries,
   getAllCountriesWithRegion,
@@ -56,4 +61,5 @@ export default {
   createCountry,
   updateCountry,
   deleteCountry,
+  getCountriesWithRegionAndStats,
 };

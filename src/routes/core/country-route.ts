@@ -9,6 +9,8 @@ router.get('/byId', CountryController.getCountryById);
 router.post('/', CountryController.createCountry);
 router.put('/', CountryController.updateCountry);
 router.delete('/', CountryController.deleteCountry);
+
 router.get('/withRegion', CountryController.getAllCountriesWithRegion);
+router.get('/withRegionAndStats', CountryController.getCountriesWithRegionAndStats);
 
 export default wrapRoutes(router);

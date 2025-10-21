@@ -26,3 +26,14 @@ export interface IEventWithCategory {
   user_id?: number;
 }
 
+// =======================
+// Countries avec la geographical region associée et des statistiques
+// =======================
+export interface ICountryWithRegionAndStats {
+  id: number;
+  name: string;
+  geographical_region_name?: string | null;
+  total_artists: number;
+  total_listens: number;
+}
+
