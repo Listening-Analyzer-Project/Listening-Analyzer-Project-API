@@ -23,3 +23,11 @@ export const runQuery = (sql: string, params: any[] = []) => {
   const stmt = db.prepare(sql);
   return stmt.run(...params);
 };
+
+/**
+ * Exécute des transactions notamment pour les exécutions en bulk
+ */
+export const runTransaction = (callback: () => void) => {
+  const transaction = db.transaction(callback);
+  return transaction();
+};
