@@ -135,6 +135,7 @@ CREATE TABLE tracks (
   tempo REAL,
   time_signature INTEGER,
   valence REAL,
+  is_edited INTEGER DEFAULT 0,
   FOREIGN KEY (album_id) REFERENCES albums(id),
   FOREIGN KEY (sub_genre_id) REFERENCES sub_genres(id)
 );

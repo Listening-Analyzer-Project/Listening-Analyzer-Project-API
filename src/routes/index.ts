@@ -17,6 +17,8 @@ import trackArtistRoutes from './relation/track-artist-route';
 import trackTagRoutes from './relation/track-tag-route';
 import playlistTrackRoute from './relation/playlist-track-route';
 
+import albumAnalyticsRoutes from './analytics/albums-analytics-route';
+
 
 const router = express.Router();
 
@@ -39,5 +41,8 @@ router.use('/listens', listenRoute);
 router.use('/track-artists', trackArtistRoutes);
 router.use('/track-tags', trackTagRoutes);
 router.use('/playlist-tracks', playlistTrackRoute);
+
+// Route d'analytics
+router.use('/analytics/albums', albumAnalyticsRoutes);
 
 export default router;
