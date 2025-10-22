@@ -11,7 +11,6 @@ const getArtistsAnalytics = (req: Request, res: Response) => {
     const data = ArtistAnalytics.getArtistsAnalytics(search, order_by, order_dir, limit, offset);
 
     res.json({
-      success: true,
       total_count: data.length > 0 ? data[0].total_count : 0,
       data
     });
