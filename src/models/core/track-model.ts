@@ -10,8 +10,8 @@ const Track = {
       `INSERT INTO tracks (
         title, duration_ms, album_id, explicit, popularity, sub_genre_id,
         acousticness, danceability, energy, instrumentalness, key, liveness,
-        loudness, mode, speechiness, tempo, time_signature, valence
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        loudness, mode, speechiness, tempo, time_signature, valence, is_edited
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         track.title,
         track.duration_ms,
@@ -31,6 +31,7 @@ const Track = {
         track.tempo,
         track.time_signature,
         track.valence,
+        track.is_edited,
       ]
     );
   },
@@ -76,7 +77,7 @@ const Track = {
       `UPDATE tracks SET
         title = ?, duration_ms = ?, album_id = ?, explicit = ?, popularity = ?, sub_genre_id = ?,
         acousticness = ?, danceability = ?, energy = ?, instrumentalness = ?, key = ?, liveness = ?,
-        loudness = ?, mode = ?, speechiness = ?, tempo = ?, time_signature = ?, valence = ?
+        loudness = ?, mode = ?, speechiness = ?, tempo = ?, time_signature = ?, valence = ?, is_edited = ?
       WHERE id = ?`,
       [
         track.title,
@@ -97,6 +98,7 @@ const Track = {
         track.tempo,
         track.time_signature,
         track.valence,
+        track.is_edited,
         id,
       ]
     );

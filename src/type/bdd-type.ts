@@ -166,6 +166,7 @@ export interface ITrack {
   tempo?: number;
   time_signature?: number;
   valence?: number;
+  is_edited?: number; // 0 ou 1
 }
 
 // =======================
