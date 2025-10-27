@@ -13,7 +13,7 @@ const getAlbumsAnalytics = (req: Request, res: Response) => {
 
     res.json({
         total_count: results.length > 0 ? results[0].total_count : 0,
-        data: results
+        data: results.map(({ total_count, ...albumAnalytics }) => albumAnalytics),
     });
 };
 

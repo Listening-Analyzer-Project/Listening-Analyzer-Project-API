@@ -12,7 +12,7 @@ const getArtistsAnalytics = (req: Request, res: Response) => {
 
     res.json({
       total_count: data.length > 0 ? data[0].total_count : 0,
-      data
+      data: data.map(({ total_count, ...artistAnalytics }) => artistAnalytics),
     });
 };
 
