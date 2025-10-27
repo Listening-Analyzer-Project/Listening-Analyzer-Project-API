@@ -1,4 +1,4 @@
-import { queryAll } from '@/utils';
+import { queryAll, queryOne } from '@/utils';
 import { IListenAnalytics } from '@/type';
 
 const ListensAnalytics = {
@@ -11,13 +11,13 @@ const ListensAnalytics = {
       end_date?: string;
       search?: string;
     } = {},
-    order_by: string = 'ts',
+    order_by: string = 'listen_timestamp',
     order_dir: string = 'desc',
     limit: number = 10000,
     offset: number = 0
   ): IListenAnalytics[] => {
     const validOrderBy = [
-      'ts',
+      'listen_timestamp',
       'track_title',
       'primary_artist_name',
       'album_title',
@@ -33,18 +33,34 @@ const ListensAnalytics = {
       'is_valid',
       'platform'
     ];
-    if (!validOrderBy.includes(order_by)) order_by = 'ts';
+    if (!validOrderBy.includes(order_by)) order_by = 'listen_timestamp';
     const direction = order_dir.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
 
     const params: any[] = [];
     const whereClauses: string[] = [];
 
-    // Filtres simples
-    if (filters.track_id) whereClauses.push(`track_id = ?`) && params.push(filters.track_id);
-    if (filters.is_valid !== undefined) whereClauses.push(`is_valid = ?`) && params.push(filters.is_valid ? 1 : 0);
-    if (filters.platform) whereClauses.push(`platform = ?`) && params.push(filters.platform);
-    if (filters.start_date) whereClauses.push(`ts >= ?`) && params.push(filters.start_date);
-    if (filters.end_date) whereClauses.push(`ts <= ?`) && params.push(filters.end_date);
+    console.log('isvalid:', filters);
+
+    if (filters.track_id) {
+      whereClauses.push(`track_id = ?`);
+      params.push(filters.track_id);
+    }
+    if (filters.is_valid !== undefined) {
+      whereClauses.push(`is_valid = ?`);
+      params.push(filters.is_valid ? 1 : 0);
+    }
+    if (filters.platform) {
+      whereClauses.push(`platform = ?`);
+      params.push(filters.platform);
+    }
+    if (filters.start_date) {
+      whereClauses.push(`listen_timestamp >= ?`);
+      params.push(filters.start_date);
+    }
+    if (filters.end_date) {
+      whereClauses.push(`listen_timestamp <= ?`);
+      params.push(filters.end_date);
+    }
 
     // Filtre texte global
     if (filters.search && filters.search.trim() !== '') {
