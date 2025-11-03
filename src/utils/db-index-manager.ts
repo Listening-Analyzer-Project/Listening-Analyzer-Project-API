@@ -31,7 +31,7 @@ const partialIndexes = [
 /**
 * Supprime tous les index listés.
 */
-const dropIndexes = () => {
+export const dropIndexes = () => {
   console.log('Dropping all indexes...');
   const indexes = [...simpleIndexes, ...composedIndexes, ...partialIndexes];
   for (const idx of indexes) {
@@ -43,7 +43,7 @@ const dropIndexes = () => {
 /**
 * Recrée tous les index listés.
 */
-const createIndexes = () => {
+export const createIndexes = () => {
   console.log('Creating all indexes...');
   const indexes = [...simpleIndexes, ...composedIndexes];
   for (const idx of indexes) {
@@ -53,9 +53,4 @@ const createIndexes = () => {
     runQuery(`CREATE INDEX IF NOT EXISTS ${idx.name} ON ${idx.table}(${idx.column}) WHERE ${idx.condition}`);
   }
   console.log('All indexes created.');
-};
-
-export const dbIndexManager = {
-  dropIndexes,
-  createIndexes,
 };

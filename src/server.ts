@@ -1,9 +1,15 @@
 import express from 'express';
 import routes from './routes';
 import { errorHandler } from '@/middleware';
+import cors from 'cors';
+import { corsOptions } from './cors.config';
+
 
 const app = express();
 const port = 3001;
+
+// Configuration CORS
+app.use(cors(corsOptions));
 
 // Middleware pour parser le JSON
 app.use(express.json());
