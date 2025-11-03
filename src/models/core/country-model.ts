@@ -33,43 +33,32 @@ const Country = {
   // =======================
   // Additional Methods
   // =======================
-  getAllWithRegion: (): ICountryWithRegion[] =>
-    queryAll<ICountryWithRegion>(`
-      SELECT
-        c.id,
-        c.name,
-        gr.id AS "geographical_region.id",
-        gr.name AS "geographical_region.name"
-      FROM countries c
-      LEFT JOIN geographical_regions gr
-        ON c.geographical_region_id = gr.id
-      ORDER BY c.name
-    `),
+  getAllWithRegion: (): ICountryWithRegion[] => {
+    return queryAll<ICountryWithRegion>(`
+      SELECT DISTINCT
+        country_id AS id,
+        country_name AS name,
+        region_id AS "geographical_region.id",
+        region_name AS "geographical_region.name"
+      FROM analytics_listens
+      WHERE country_id IS NOT NULL
+      ORDER BY country_name
+    `);
+  },
 
   getWithRegionAndStats: (): ICountryWithRegionAndStats[] => {
-    const sql = `
-      SELECT 
-        c.id,
-        c.name,
-        gr.name AS geographical_region_name,
-        COUNT(DISTINCT a.id) AS total_artists,
-        COUNT(l.id) AS total_listens
-      FROM countries c
-      LEFT JOIN geographical_regions gr ON c.geographical_region_id = gr.id
-      LEFT JOIN artists a ON a.country_id = c.id
-      LEFT JOIN listens l ON l.track_id IN (
-        SELECT t.id
-        FROM tracks t
-        WHERE t.id IN (
-          SELECT ta.track_id
-          FROM track_artists ta
-          WHERE ta.artist_id = a.id
-        )
-      )
-      GROUP BY c.id, c.name, gr.name
-      ORDER BY total_listens DESC, c.name ASC
-    `;
-    return queryAll<ICountryWithRegionAndStats>(sql);
+    return queryAll<ICountryWithRegionAndStats>(`
+      SELECT
+        country_id AS id,
+        country_name AS name,
+        region_name AS geographical_region_name,
+        COUNT(DISTINCT primary_artist_id) AS total_artists,
+        COUNT(listen_id) AS total_listens
+      FROM analytics_listens
+      WHERE country_id IS NOT NULL
+      GROUP BY country_id, country_name, region_name
+      ORDER BY total_listens DESC, country_name ASC
+    `);
   },
 };
 
