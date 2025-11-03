@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { importService } from '@/service';
 import type { CanonicalListen } from '@/type';
 
-const importBatch = (req: Request, res: Response) => {
+const importBatch = async (req: Request, res: Response) => {
   const batch = req.body as CanonicalListen[];
   const id = Number(req.query.id);
 
@@ -12,10 +12,10 @@ const importBatch = (req: Request, res: Response) => {
   return res.status(400).json({ error: 'Aucune donnée à importer.' });
   }
 
-  const result = importService.importCanonicalListens(batch, id);
-  return res.status(200).json({
-  success: true,
-  ...result,
+  const result = await importService.importCanonicalListens(batch, id);
+  res.status(200).json({
+    success: true,
+    ...result,
   });
 };
 

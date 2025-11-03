@@ -35,9 +35,6 @@ const chunkArray = <T>(arr: T[], size = 500): T[][] => {
   return out;
 };
 
-/**
- * Normalisation simple (same as helpers)
- */
 const normalize = (s?: string | null) => (s ?? '').trim().toLowerCase();
 
 /**
@@ -61,7 +58,6 @@ export const importService = {
         insertedListens: 0,
       };
     }
-    // Pour performance globale, on droppe les indexes avant l'import massif, puis on les recrée après.
    
     dropIndexes();
  
@@ -72,7 +68,6 @@ export const importService = {
     const pairs = groupedTitleAlbumPairs(groupsMap);
 
     // 3) Trouver tracks existants en base (title+album puis title)
-    // chunk if too many pairs (safety)
     const pairChunks = chunkArray(pairs, 500);
     const byKeyAccum: Record<string, number | undefined> = {};
     const existingRowsAccum: Array<{ id: number; title: string; albumTitle: string | null }> = [];
@@ -96,7 +91,6 @@ export const importService = {
       }
     }
 
-    // Préparer summary counters
     let insertedGenres = 0;
     let insertedSubGenres = 0;
     let insertedAlbums = 0;
@@ -125,8 +119,8 @@ export const importService = {
     // 6) Pour les nouveaux groupes, collecter entités uniques à insérer
     const genresSet = new Set<string>();
     const subGenreToGenre = new Map<string, string>(); // subgenre -> genre
-    const albumsMap = new Map<string, IAlbum>(); // title -> album payload (unique)
-    const artistsMap = new Map<string, IArtist>(); // name -> artist payload
+    const albumsMap = new Map<string, IAlbum>();
+    const artistsMap = new Map<string, IArtist>();
     const tagsSet = new Set<string>();
     const newTrackEntries: Array<{ key: string; group: GroupedTrack }> = [];
 
@@ -173,26 +167,21 @@ export const importService = {
       newTrackEntries.push({ key, group });
     }
 
-    // Helper to resolve/create entities in chunks (genres, subGenres, albums, artists, tags)
     // We'll use checkExistsByColumn (which returns normalizedValue -> id) and create missing via model.createMany
-
     await runTransaction(() => {
       // ----- 6.1 GENRES -----
       const genreNames = Array.from(genresSet);
       let genresMap: Record<string, number> = {};
       if (genreNames.length > 0) {
-        // check existing in chunks
         for (const chunk of chunkArray(genreNames, 500)) {
           const existing = checkExistsByColumn({ table: 'genres', column: 'name', values: chunk });
           Object.assign(genresMap, existing);
         }
-        // missing genres
         const missingGenres = genreNames.filter(n => genresMap[normalize(n)] === undefined).map(n => ({ name: n } as IGenre));
         if (missingGenres.length > 0) {
           GenreModel.createMany(missingGenres);
           insertedGenres += missingGenres.length;
         }
-        // rebuild map (safe to query via checkExistsByColumn again)
         for (const chunk of chunkArray(genreNames, 500)) {
           const m = checkExistsByColumn({ table: 'genres', column: 'name', values: chunk });
           Object.assign(genresMap, m);
@@ -207,7 +196,6 @@ export const importService = {
           const existing = checkExistsByColumn({ table: 'sub_genres', column: 'name', values: chunk });
           Object.assign(subGenresMap, existing);
         }
-        // insert missing subgenres (need genre_id)
         const missingSubs: ISubGenre[] = [];
         for (const subName of subNames) {
           if (subGenresMap[normalize(subName)] !== undefined) continue;
@@ -219,7 +207,6 @@ export const importService = {
           SubGenreModel.createMany(missingSubs);
           insertedSubGenres += missingSubs.length;
         }
-        // rebuild map
         for (const chunk of chunkArray(subNames, 500)) {
           const m = checkExistsByColumn({ table: 'sub_genres', column: 'name', values: chunk });
           Object.assign(subGenresMap, m);
@@ -241,7 +228,6 @@ export const importService = {
           AlbumModel.createMany(missingAlbums);
           insertedAlbums += missingAlbums.length;
         }
-        // rebuild map
         for (const chunk of chunkArray(albumTitles, 500)) {
           const m = checkExistsByColumn({ table: 'albums', column: 'title', values: chunk });
           Object.assign(albumsIdMap, m);
@@ -289,7 +275,6 @@ export const importService = {
       }
 
       // ----- 6.6 TRACKS (création) -----
-      // Construire la payload tracks à insérer
       const tracksToCreate: ITrack[] = newTrackEntries.map(n => {
         const t = n.group.track;
         const albumTitle = t.album?.title ? t.album.title.trim() : null;
@@ -326,14 +311,12 @@ export const importService = {
       }
 
       // ----- 6.7 Résoudre les nouveaux track ids (après insert) -----
-      // Re-run findExistingTracks on the new group pairs (title+album) to retrieve the created ids
       const newPairs = newTrackEntries.map(n => {
         const title = n.group.track.title;
         const albumTitle = n.group.track.album?.title ?? null;
         return { title, albumTitle, key: n.key };
       });
 
-      // chunk
       const newByKey: Record<string, number | undefined> = {};
       for (const chunk of chunkArray(newPairs, 500)) {
         const { byKey } = findExistingTracks(chunk);
@@ -346,15 +329,13 @@ export const importService = {
 
       for (const n of newTrackEntries) {
         const trackId = newByKey[n.key];
-        if (!trackId) continue; // safety
+        if (!trackId) continue;
 
-        // artists
         for (const a of n.group.track.artists || []) {
           const artId = artistsIdMap[normalize(a.name)];
           if (artId) trackArtistsToCreate.push({ track_id: trackId, artist_id: artId, is_primary: 0 } as ITrackArtist);
         }
 
-        // tags
         for (const tg of n.group.track.tags || []) {
           const tagId = tagsIdMap[normalize(tg)];
           if (tagId) trackTagsToCreate.push({ track_id: trackId, tag_id: tagId } as ITrackTag);
@@ -404,9 +385,7 @@ export const importService = {
         ListenModel.createMany(listensToInsert_new);
         insertedListens += listensToInsert_new.length;
       }
-
-      // fin transaction block
-    }); // end runTransaction
+    });
 
     createIndexes();
 
