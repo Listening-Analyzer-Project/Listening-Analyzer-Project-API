@@ -2,6 +2,9 @@ import { Request, Response } from 'express';
 import Genre from '../../models/core/genre-model';
 import { IGenre } from '@/type';
 
+// =======================
+// CRUD
+// =======================
 const getAllGenres = async (req: Request, res: Response) => {
   const genres = await Genre.getAll();
   res.json(genres);
@@ -36,10 +39,20 @@ const deleteGenre = async (req: Request, res: Response) => {
   res.json(deleted);
 };
 
+// =======================
+// Autres méthodes spécifiques
+// =======================
+
+const getAllGenresWithSubGenres = (req: Request, res: Response) => {
+  const data = Genre.getAllWithSubGenres();
+  return res.status(200).json(data);
+};
+
 export default {
   getAllGenres,
   getGenreById,
   createGenre,
   updateGenre,
   deleteGenre,
+  getAllGenresWithSubGenres,
 };

@@ -2,6 +2,10 @@ import { Request, Response } from 'express';
 import Country from '../../models/core/country-model';
 import { ICountry } from '@/type';
 
+// =======================
+// CRUD
+// =======================
+
 const getAllCountries = async (req: Request, res: Response) => {
     const countries = await Country.getAll();
     res.json(countries);
@@ -36,10 +40,26 @@ const deleteCountry = async (req: Request, res: Response) => {
   res.json(deleted);
 };
 
+// =======================
+// Additional Methods
+// =======================
+
+const getAllCountriesWithRegion = async (_req: Request, res: Response) => {
+  const countries = await Country.getAllWithRegion();
+  res.json(countries);
+};
+
+const getCountriesWithRegionAndStats = (req: Request, res: Response) => {
+  const countries = Country.getWithRegionAndStats();
+  res.json(countries);
+};
+
 export default {
   getAllCountries,
+  getAllCountriesWithRegion,
   getCountryById,
   createCountry,
   updateCountry,
   deleteCountry,
+  getCountriesWithRegionAndStats,
 };

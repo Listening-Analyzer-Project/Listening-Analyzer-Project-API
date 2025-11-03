@@ -1,3 +1,6 @@
+-- ======================
+-- Création des tables
+-- ======================
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT UNIQUE NOT NULL,
@@ -135,6 +138,28 @@ CREATE TABLE tracks (
   tempo REAL,
   time_signature INTEGER,
   valence REAL,
+  is_edited INTEGER DEFAULT 0,
   FOREIGN KEY (album_id) REFERENCES albums(id),
   FOREIGN KEY (sub_genre_id) REFERENCES sub_genres(id)
 );
+
+-- ======================
+-- INDEX OPTIMISÉS (ANALYTIQUES)
+-- ======================
+
+-- Relations principales pour les grosses jointures analytiques
+CREATE INDEX idx_track_artists_track_artist ON track_artists(track_id, artist_id);
+CREATE INDEX idx_track_tag_track_tag ON track_tag(track_id, tag_id);
+CREATE INDEX idx_tracks_album_id ON tracks(album_id);
+CREATE INDEX idx_tracks_sub_genre_id ON tracks(sub_genre_id);
+CREATE INDEX idx_listens_track_id ON listens(track_id);
+CREATE INDEX idx_artists_country_id ON artists(country_id);
+CREATE INDEX idx_sub_genres_genre_id ON sub_genres(genre_id);
+
+-- Filtres fréquents
+CREATE INDEX idx_artists_name ON artists(name);
+CREATE INDEX idx_albums_title ON albums(title);
+CREATE INDEX idx_listens_user_id ON listens(user_id);
+CREATE INDEX idx_listens_valid_ms ON listens(track_id) WHERE ms_played >= 30000;
+CREATE INDEX idx_listens_invalid_ms ON listens(track_id) WHERE ms_played < 30000;
+

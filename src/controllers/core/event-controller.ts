@@ -2,6 +2,10 @@ import { Request, Response } from 'express';
 import Event from '../../models/core/event-model';
 import { IEvent } from '@/type';
 
+// =======================
+// CRUD
+// =======================
+
 const getAllEvents = async (req: Request, res: Response) => {
   const events = await Event.getAll();
   res.json(events);
@@ -36,10 +40,29 @@ const deleteEvent = async (req: Request, res: Response) => {
   res.json({ id });
 };
 
+// =======================
+// Additional Methods
+// =======================
+
+const getEventsWithCategory = async (req: Request, res: Response) => {
+  const { user_id, category_id, limit, offset } = req.query;
+  if (!user_id) throw { status: 400, message: 'user_id manquant' };
+
+  const events = Event.getAllWithCategory({
+    user_id: Number(user_id),
+    category_id: category_id ? Number(category_id) : undefined,
+    limit: limit ? Number(limit) : 50,
+    offset: offset ? Number(offset) : 0,
+  });
+
+  res.json(events);
+};
+
 export default {
   getAllEvents,
   getEventById,
   createEvent,
   updateEvent,
   deleteEvent,
+  getEventsWithCategory,
 };
