@@ -34,16 +34,18 @@ const SubGenre = {
 
   createMany: (subGenres: ISubGenre[]) => {
     if (!Array.isArray(subGenres) || subGenres.length === 0) {
-      return { insertedCount: 0 };
+      return { insertedCount: 0, insertedIds: [] };
     }
-
+    const insertedIds: number[] = [];
+    
     runTransaction(() => {
       for (const sg of subGenres) {
-        SubGenre._insert(sg);
+        const info = SubGenre._insert(sg);
+        insertedIds.push(info.lastInsertRowid as number);
       }
     });
 
-    return { insertedCount: subGenres.length };
+    return { insertedCount: subGenres.length, insertedIds };
   },
 
   update: (id: number, subGenre: ISubGenre) => {
