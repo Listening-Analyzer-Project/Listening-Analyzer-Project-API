@@ -34,17 +34,20 @@ const Tag = {
 
   createMany: (tags: ITag[]) => {
     if (!Array.isArray(tags) || tags.length === 0) {
-      return { insertedCount: 0 };
+      return { insertedCount: 0, insertedIds: [] };
     }
+    const insertedIds: number[] = [];
 
     runTransaction(() => {
       for (const tag of tags) {
-        Tag._insertTag(tag);
+        const info = Tag._insertTag(tag);
+        insertedIds.push(info.lastInsertRowid as number);
       }
     });
 
     return {
       insertedCount: tags.length,
+      insertedIds,
     };
   },
 

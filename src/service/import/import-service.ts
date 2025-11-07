@@ -129,8 +129,10 @@ export const importService = {
       const t = group.track;
 
       // genres / sub_genres
-      if (t.genre) genresSet.add(t.genre);
-      if (t.sub_genre) {
+      if (t.genre && !genresSet.has(t.genre)) {
+        genresSet.add(t.genre);
+      }
+      if (t.sub_genre && !subGenreToGenre.has(t.sub_genre)) {
         subGenreToGenre.set(t.sub_genre, t.genre ?? '');
       }
 
@@ -162,7 +164,11 @@ export const importService = {
       }
 
       // tags
-      for (const tg of t.tags || []) tagsSet.add(tg);
+      for (const tg of t.tags || []) {
+        if (!tagsSet.has(tg)) {
+          tagsSet.add(tg);
+        }
+      }
 
       newTrackEntries.push({ key, group });
     }
@@ -179,12 +185,11 @@ export const importService = {
         }
         const missingGenres = genreNames.filter(n => genresMap[normalize(n)] === undefined).map(n => ({ name: n } as IGenre));
         if (missingGenres.length > 0) {
-          GenreModel.createMany(missingGenres);
-          insertedGenres += missingGenres.length;
-        }
-        for (const chunk of chunkArray(genreNames, 500)) {
-          const m = checkExistsByColumn({ table: 'genres', column: 'name', values: chunk });
-          Object.assign(genresMap, m);
+          const { insertedIds, insertedCount } = GenreModel.createMany(missingGenres);
+          missingGenres.forEach((g, i) => {
+            genresMap[normalize(g.name)] = insertedIds[i];
+          });
+          insertedGenres += insertedCount;
         }
       }
 
@@ -204,12 +209,11 @@ export const importService = {
           missingSubs.push({ name: subName, genre_id: genreId ?? null } as ISubGenre);
         }
         if (missingSubs.length > 0) {
-          SubGenreModel.createMany(missingSubs);
-          insertedSubGenres += missingSubs.length;
-        }
-        for (const chunk of chunkArray(subNames, 500)) {
-          const m = checkExistsByColumn({ table: 'sub_genres', column: 'name', values: chunk });
-          Object.assign(subGenresMap, m);
+          const { insertedIds, insertedCount } = SubGenreModel.createMany(missingSubs);
+          missingSubs.forEach((sg, i) => {
+            subGenresMap[normalize(sg.name)] = insertedIds[i];
+          });
+          insertedSubGenres += insertedCount;
         }
       }
 
@@ -225,12 +229,11 @@ export const importService = {
           .filter(t => albumsIdMap[normalize(t)] === undefined)
           .map(t => albumsMap.get(t) as IAlbum);
         if (missingAlbums.length > 0) {
-          AlbumModel.createMany(missingAlbums);
-          insertedAlbums += missingAlbums.length;
-        }
-        for (const chunk of chunkArray(albumTitles, 500)) {
-          const m = checkExistsByColumn({ table: 'albums', column: 'title', values: chunk });
-          Object.assign(albumsIdMap, m);
+          const { insertedIds, insertedCount } = AlbumModel.createMany(missingAlbums);
+          missingAlbums.forEach((a, i) => {
+            albumsIdMap[normalize(a.title)] = insertedIds[i];
+          });
+          insertedAlbums += insertedCount;
         }
       }
 
@@ -246,12 +249,11 @@ export const importService = {
           .filter(n => artistsIdMap[normalize(n)] === undefined)
           .map(n => artistsMap.get(n) as IArtist);
         if (missingArtists.length > 0) {
-          ArtistModel.createMany(missingArtists);
-          insertedArtists += missingArtists.length;
-        }
-        for (const chunk of chunkArray(artistNames, 500)) {
-          const m = checkExistsByColumn({ table: 'artists', column: 'name', values: chunk });
-          Object.assign(artistsIdMap, m);
+          const { insertedIds, insertedCount } = ArtistModel.createMany(missingArtists);
+          missingArtists.forEach((a, i) => {
+            artistsIdMap[normalize(a.name)] = insertedIds[i];
+          });
+          insertedArtists += insertedCount;
         }
       }
 
@@ -265,12 +267,11 @@ export const importService = {
         }
         const missingTags = tagNames.filter(t => tagsIdMap[normalize(t)] === undefined).map(t => ({ name: t } as ITag));
         if (missingTags.length > 0) {
-          TagModel.createMany(missingTags);
-          insertedTags += missingTags.length;
-        }
-        for (const chunk of chunkArray(tagNames, 500)) {
-          const m = checkExistsByColumn({ table: 'tag', column: 'name', values: chunk });
-          Object.assign(tagsIdMap, m);
+          const { insertedIds, insertedCount } = TagModel.createMany(missingTags);
+          missingTags.forEach((t, i) => {
+            tagsIdMap[normalize(t.name)] = insertedIds[i];
+          });
+          insertedTags += insertedCount;
         }
       }
 
@@ -305,23 +306,19 @@ export const importService = {
         } as ITrack;
       });
 
+      let trackInsertedIds: number[] = [];
       if (tracksToCreate.length > 0) {
-        TrackModel.createMany(tracksToCreate);
-        insertedTracks += tracksToCreate.length;
+        const { insertedIds, insertedCount } = TrackModel.createMany(tracksToCreate);
+        trackInsertedIds = insertedIds;
+        insertedTracks += insertedCount;
       }
 
       // ----- 6.7 Résoudre les nouveaux track ids (après insert) -----
-      const newPairs = newTrackEntries.map(n => {
-        const title = n.group.track.title;
-        const albumTitle = n.group.track.album?.title ?? null;
-        return { title, albumTitle, key: n.key };
+      const newByKey: Record<string, number> = {};
+      tracksToCreate.forEach((t, i) => {
+        const key = newTrackEntries[i].key; // même index
+        newByKey[key] = trackInsertedIds[i];
       });
-
-      const newByKey: Record<string, number | undefined> = {};
-      for (const chunk of chunkArray(newPairs, 500)) {
-        const { byKey } = findExistingTracks(chunk);
-        Object.assign(newByKey, byKey);
-      }
 
       // ----- 6.8 Relations: track_artists & track_tags -----
       const trackArtistsToCreate: ITrackArtist[] = [];

@@ -35,17 +35,20 @@ const Genre = {
 
   createMany: (genres: IGenre[]) => {
     if (!Array.isArray(genres) || genres.length === 0) {
-      return { insertedCount: 0 };
+      return { insertedCount: 0, insertedIds: [] };
     }
+    const insertedIds: number[] = [];
 
     runTransaction(() => {
       for (const genre of genres) {
-        Genre._insertGenre(genre);
+        const info = Genre._insertGenre(genre);
+        insertedIds.push(info.lastInsertRowid as number);
       }
     });
 
     return {
       insertedCount: genres.length,
+      insertedIds,
     };
   },
 

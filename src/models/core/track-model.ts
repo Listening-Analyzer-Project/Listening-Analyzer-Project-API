@@ -59,16 +59,19 @@ const Track = {
 
   createMany: (tracks: ITrack[]) => {
     if (!Array.isArray(tracks) || tracks.length === 0) {
-      return { insertedCount: 0 };
+      return { insertedCount: 0, insertedIds: [] };
     }
+    const insertedIds: number[] = [];
     runTransaction(() => {
       for (const track of tracks) {
-        Track._insertTrack(track);
+        const info = Track._insertTrack(track);
+        insertedIds.push(info.lastInsertRowid as number);
       }
     });
 
     return {
       insertedCount: tracks.length,
+      insertedIds,
     };
   },
 

@@ -43,16 +43,20 @@ const Artist = {
 
   createMany: (artists: IArtist[]) => {
     if (!Array.isArray(artists) || artists.length === 0) {
-      return { insertedCount: 0 };
+      return { insertedCount: 0, insertedIds: [] };
     }
+    const insertedIds: number[] = [];
+    
     runTransaction(() => {
       for (const artist of artists) {
-        Artist._insertArtist(artist);
+        const info = Artist._insertArtist(artist);
+        insertedIds.push(info.lastInsertRowid as number);
       }
     });
 
     return {
       insertedCount: artists.length,
+      insertedIds,
     };
   },
 

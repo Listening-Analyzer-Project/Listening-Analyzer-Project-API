@@ -35,17 +35,20 @@ const Album = {
 
   createMany: (albums: IAlbum[]) => {
     if (!Array.isArray(albums) || albums.length === 0) {
-      return { insertedCount: 0 };
+      return { insertedCount: 0, insertedIds: [] };
     }
+    const insertedIds: number[] = [];
 
     runTransaction(() => {
       for (const album of albums) {
-        Album._insertAlbum(album);
+        const info = Album._insertAlbum(album);
+        insertedIds.push(info.lastInsertRowid as number);
       }
     });
 
     return {
       insertedCount: albums.length,
+      insertedIds,
     };
   },
 
