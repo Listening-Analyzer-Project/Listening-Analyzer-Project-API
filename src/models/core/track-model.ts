@@ -120,35 +120,49 @@ const Track = {
       message: `${info.changes ?? 0} tracks deleted successfully`,
     };
   },
-};
 
-export const findTracksByTitleAndAlbum = (pairs: Array<{ title: string; albumTitle: string }>) => {
-  if (!pairs || pairs.length === 0) return [] as Array<{ id: number; title: string; albumTitle: string }>;
+  findTracksByTitleAndAlbum: (pairs: Array<{ title: string; albumTitle: string }>) => {
+    if (!pairs || pairs.length === 0) return [] as Array<{ id: number; title: string; albumTitle: string }>;
 
-  const titlePlaceholders = pairs.map(() => '?').join(',');
-  const albumPlaceholders = pairs.map(() => '?').join(',');
+    const titlePlaceholders = pairs.map(() => '?').join(',');
+    const albumPlaceholders = pairs.map(() => '?').join(',');
 
-  const sql = `
-    SELECT t.id as id, t.title as title, a.title as albumTitle
-    FROM tracks t
-    JOIN albums a ON a.id = t.album_id
-    WHERE t.title IN (${titlePlaceholders})
-      AND a.title IN (${albumPlaceholders})
-  `;
+    const sql = `
+      SELECT t.id as id, t.title as title, a.title as albumTitle
+      FROM tracks t
+      JOIN albums a ON a.id = t.album_id
+      WHERE t.title IN (${titlePlaceholders})
+        AND a.title IN (${albumPlaceholders})
+    `;
 
-  const params: string[] = [...pairs.map(p => p.title), ...pairs.map(p => p.albumTitle)];
-  const rows = queryAll<{ id: number; title: string; albumTitle: string }>(sql, params);
+    const params: string[] = [...pairs.map(p => p.title), ...pairs.map(p => p.albumTitle)];
+    const rows = queryAll<{ id: number; title: string; albumTitle: string }>(sql, params);
 
-  return rows.map(r => ({ id: r.id, title: r.title, albumTitle: r.albumTitle }));
-};
+    return rows.map(r => ({ id: r.id, title: r.title, albumTitle: r.albumTitle }));
+  },
 
-export const findTracksByTitles = (titles: string[]) => {
-  if (!titles || titles.length === 0) return [] as Array<{ id: number; title: string }>;
+  findTracksByTitles: (titles: string[]) => {
+    if (!titles || titles.length === 0) return [] as Array<{ id: number; title: string }>;
 
-  const placeholders = titles.map(() => '?').join(',');
-  const sql = `SELECT id, title FROM tracks WHERE title IN (${placeholders})`;
-  const rows = queryAll<{ id: number; title: string }>(sql, titles);
-  return rows.map(r => ({ id: r.id, title: r.title }));
+    const placeholders = titles.map(() => '?').join(',');
+    const sql = `SELECT id, title FROM tracks WHERE title IN (${placeholders})`;
+    const rows = queryAll<{ id: number; title: string }>(sql, titles);
+    return rows.map(r => ({ id: r.id, title: r.title }));
+  },
+
+  findUnusedTracks: () => {
+    const sql = `
+      SELECT t.id
+      FROM tracks t
+      WHERE t.is_edited = 0
+      AND t.id NOT IN (
+        SELECT DISTINCT track_id
+        FROM analytics_listens
+        WHERE track_id IS NOT NULL
+      )
+    `;
+    return queryAll<{ id: number }>(sql);
+  },
 };
 
 export default Track;

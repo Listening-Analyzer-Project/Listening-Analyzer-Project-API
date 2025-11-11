@@ -90,6 +90,19 @@ const Artist = {
       message: `${info.changes ?? 0} artists deleted successfully`,
     };
   },
+
+  findOrphanArtists: () => {
+    const sql = `
+      SELECT a.id
+      FROM artists a
+      WHERE a.id NOT IN (
+        SELECT DISTINCT artist_id
+        FROM track_artists
+        WHERE artist_id IS NOT NULL
+      )
+    `;
+    return queryAll<{ id: number }>(sql);
+  },
 };
 
 export default Artist;

@@ -1,5 +1,5 @@
 import { queryAll } from '@/utils';
-import { findTracksByTitleAndAlbum, findTracksByTitles } from './../../../models/core/track-model';
+import Track from './../../../models/core/track-model';
 
 const normalize = (s?: string | null) =>
   (s ?? '')
@@ -46,7 +46,7 @@ export const findExistingTracks = (groups: Array<{ title: string; albumTitle: st
   // Strict match title + album via Track model
   if (withAlbum.length > 0) {
     const pairs = withAlbum.map(g => ({ title: g.title, albumTitle: g.albumTitle as string }));
-    const rows = findTracksByTitleAndAlbum(pairs);
+    const rows = Track.findTracksByTitleAndAlbum(pairs);
     const lookup = new Map<string, number>();
     for (const r of rows) {
       const k = `${normalize(r.title)}||${normalize(r.albumTitle)}`;
@@ -64,7 +64,7 @@ export const findExistingTracks = (groups: Array<{ title: string; albumTitle: st
   if (withoutAlbum.length > 0) {
     const uniqueTitles = Array.from(new Set(withoutAlbum.map(g => g.title)));
     if (uniqueTitles.length > 0) {
-      const rows = findTracksByTitles(uniqueTitles);
+      const rows = Track.findTracksByTitles(uniqueTitles);
       const titleLookup = new Map<string, number>();
       for (const r of rows) {
         titleLookup.set(normalize(r.title), r.id);

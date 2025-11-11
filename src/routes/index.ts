@@ -23,6 +23,7 @@ import tracksAnalyticsRoutes from './analytics/tracks-analytics-route';
 import listensAnalyticsRoutes from './analytics/listens-analytics-route';
 
 import importRoute from './other/import-route';
+import deleteUserRoute from './other/delete-user-route';
 
 
 const router = express.Router();
@@ -55,5 +56,6 @@ router.use('/analytics/listens', listensAnalyticsRoutes);
 
 // Routes other
 router.use('/import', importRoute);
+router.use('/delete-user', deleteUserRoute);
 
 export default router;
