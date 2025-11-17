@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import SubGenre from '../../models/core/sub-genre-model';
+import SubGenre from '@/models/core/sub-genre-model';
 import { ISubGenre } from '@/type';
 
 const getAllSubGenres = async (req: Request, res: Response) => {

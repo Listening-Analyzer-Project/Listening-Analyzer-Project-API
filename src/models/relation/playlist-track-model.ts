@@ -25,6 +25,14 @@ const PlaylistTrack = {
     );
     return { changes: info.changes };
   },
+
+  deleteByPlaylistIds: (playlistIds: number[]) => {
+    if (!Array.isArray(playlistIds) || playlistIds.length === 0) return { changes: 0 };
+    const placeholders = playlistIds.map(() => '?').join(', ');
+    const sql = `DELETE FROM playlist_track WHERE playlist_id IN (${placeholders})`;
+    const result = runQuery(sql, playlistIds);
+    return { changes: result.changes ?? 0 };
+  },
 };
 
 export default PlaylistTrack;

@@ -1,5 +1,5 @@
 import express from 'express';
-import TrackTagController from '../../controllers/relation/track-tag-controller';
+import TrackTagController from '@/controllers/relation/track-tag-controller';
 import { wrapRoutes } from '@/utils';
 
 const router = express.Router();

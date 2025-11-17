@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Listen from '../../models/core/listen-model';
+import Listen from '@/models/core/listen-model';
 import { IListen } from '@/type';
 
 const getAllListens = async (req: Request, res: Response) => {

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Country from '../../models/core/country-model';
+import Country from '@/models/core/country-model';
 import { ICountry } from '@/type';
 
 // =======================

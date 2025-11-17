@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Genre from '../../models/core/genre-model';
+import Genre from '@/models/core/genre-model';
 import { IGenre } from '@/type';
 
 // =======================

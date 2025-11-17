@@ -1,9 +1,9 @@
 import express from 'express';
-import importController from '@/controllers/other/import-controller';
+import deleteUser from '@/controllers/other/delete-user-controller';
 import { wrapRoutes } from '@/utils';
 
 const router = express.Router();
 
-router.post('/', importController.importBatch);
+router.delete('/', deleteUser.deleteUser);
 
 export default wrapRoutes(router);

@@ -13,6 +13,10 @@ export const errorHandler = (err: any, req: Request, res: Response, next: NextFu
     return res.status(400).json({ error: err.message });
   }
 
+  if (err.status === 404) {
+    return res.status(404).json({ error: err.message });
+  }
+
   // Par défaut → erreur interne serveur
   res.status(500).json({ error: 'Erreur interne du serveur', details: err.message });
 };

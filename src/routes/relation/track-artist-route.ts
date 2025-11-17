@@ -1,5 +1,5 @@
 import express from 'express';
-import TrackArtistController from '../../controllers/relation/track-artist-controller';
+import TrackArtistController from '@/controllers/relation/track-artist-controller';
 import { wrapRoutes } from '@/utils';
 
 const router = express.Router();

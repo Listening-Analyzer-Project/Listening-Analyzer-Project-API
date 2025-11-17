@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Artist from '../../models/core/artist-model';
+import Artist from '@/models/core/artist-model';
 import { IArtist } from '@/type';
 
 const getAllArtists = async (req: Request, res: Response) => {

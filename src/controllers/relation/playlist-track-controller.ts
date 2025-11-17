@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import PlaylistTrack from '../../models/relation/playlist-track-model';
+import PlaylistTrack from '@/models/relation/playlist-track-model';
 import { IPlaylistTrack } from '@/type';
 
 const getAllPlaylistTracks = async (req: Request, res: Response) => {

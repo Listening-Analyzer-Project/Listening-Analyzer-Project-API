@@ -78,6 +78,14 @@ const TrackArtist = {
       message: `${info.changes ?? 0} track-artist relations deleted successfully`,
     };
   },
+
+  deleteByTrackIds: (trackIds: number[]) => {
+    if (!Array.isArray(trackIds) || trackIds.length === 0) return { changes: 0 };
+    const placeholders = trackIds.map(() => '?').join(', ');
+    const sql = `DELETE FROM track_artists WHERE track_id IN (${placeholders})`;
+    const result = runQuery(sql, trackIds);
+    return { changes: result.changes ?? 0 };
+  }
 };
 
 export default TrackArtist;

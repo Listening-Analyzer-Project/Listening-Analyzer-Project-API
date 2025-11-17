@@ -40,11 +40,11 @@ VALUES
 INSERT INTO tracks (
   title, duration_ms, album_id, explicit, popularity, sub_genre_id,
   acousticness, danceability, energy, instrumentalness, key, liveness,
-  loudness, mode, speechiness, tempo, time_signature, valence
+  loudness, mode, speechiness, tempo, time_signature, valence, is_edited
 ) VALUES
-  ('Don’t Start Now', 183000, 1, 0, 90, 1, 0.12, 0.80, 0.75, 0.01, 1, 0.12, -5.0, 1, 0.06, 124, 4, 0.95),
-  ('God’s Plan', 198000, 2, 1, 95, 2, 0.05, 0.79, 0.65, 0.0, 5, 0.15, -6.2, 1, 0.10, 153, 4, 0.80),
-  ('Zenzenzense', 250000, 3, 0, 85, 3, 0.03, 0.85, 0.88, 0.01, 3, 0.10, -4.5, 1, 0.05, 172, 4, 0.98);
+  ('Don’t Start Now', 183000, 1, 0, 90, 1, 0.12, 0.80, 0.75, 0.01, 1, 0.12, -5.0, 1, 0.06, 124, 4, 0.95, 1),
+  ('God’s Plan', 198000, 2, 1, 95, 2, 0.05, 0.79, 0.65, 0.0, 5, 0.15, -6.2, 1, 0.10, 153, 4, 0.80, 1),
+  ('Zenzenzense', 250000, 3, 0, 85, 3, 0.03, 0.85, 0.88, 0.01, 3, 0.10, -4.5, 1, 0.05, 172, 4, 0.98, 0);
 
 -- Relations track_artists
 INSERT INTO track_artists (track_id, artist_id, is_primary)
@@ -54,8 +54,7 @@ VALUES (1, 1, 1), (2, 2, 1), (3, 3, 1);
 INSERT INTO track_tag (track_id, tag_id)
 VALUES 
   (1, 1), (1, 3),
-  (2, 2),
-  (3, 3);
+  (2, 2);
 
 -- Écoutes (listens)
 INSERT INTO listens (ts, platform, ms_played, track_id, user_id, reason_end)

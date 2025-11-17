@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import GeographicalRegion from '../../models/core/geographical-region-model';
+import GeographicalRegion from '@/models/core/geographical-region-model';
 import { IGeographicalRegion } from '@/type';
 
 const getAllRegions = async (req: Request, res: Response) => {

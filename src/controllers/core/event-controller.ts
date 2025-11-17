@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Event from '../../models/core/event-model';
+import Event from '@/models/core/event-model';
 import { IEvent } from '@/type';
 
 // =======================

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Playlist from '../../models/core/playlist-model';
+import Playlist from '@/models/core/playlist-model';
 import { IPlaylist } from '@/type';
 
 const getAllPlaylists = async (req: Request, res: Response) => {

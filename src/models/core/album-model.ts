@@ -74,6 +74,19 @@ const Album = {
       message: `${info.changes ?? 0} albums deleted successfully`,
     };
   },
+
+  findOrphanAlbums: () => {
+    const sql = `
+      SELECT a.id
+      FROM albums a
+      WHERE a.id NOT IN (
+        SELECT DISTINCT album_id
+        FROM tracks
+        WHERE album_id IS NOT NULL
+      )
+    `;
+    return queryAll<{ id: number }>(sql);
+  },
 };
 
 export default Album;

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import TrackArtist from '../../models/relation/track-artist-model';
+import TrackArtist from '@/models/relation/track-artist-model';
 import { ITrackArtist } from '@/type';
 
 const getAllTrackArtists = async (req: Request, res: Response) => {

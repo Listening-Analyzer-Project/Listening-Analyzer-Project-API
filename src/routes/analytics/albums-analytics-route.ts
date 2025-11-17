@@ -1,5 +1,5 @@
 import express from 'express';
-import AlbumAnalyticsController from '../../controllers/analytics/albums-analytics-controller';
+import AlbumAnalyticsController from '@/controllers/analytics/albums-analytics-controller';
 import { wrapRoutes } from '@/utils';
 
 const router = express.Router();

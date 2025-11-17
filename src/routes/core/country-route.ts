@@ -1,5 +1,5 @@
 import express from 'express';
-import CountryController from '../../controllers/core/country-controller';
+import CountryController from '@/controllers/core/country-controller';
 import { wrapRoutes } from '@/utils';
 
 const router = express.Router();

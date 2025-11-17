@@ -71,6 +71,10 @@ const Listen = {
       message: `${info.changes ?? 0} listens deleted successfully`,
     };
   },
+
+  getAllbyUserId: (userId: number) => { 
+    return queryAll<IListen>('SELECT * FROM listens WHERE user_id = ?', [userId]);
+  }
 };
 
 export default Listen;
