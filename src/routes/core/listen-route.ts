@@ -1,5 +1,5 @@
 import express from 'express';
-import ListenController from '../../controllers/core/listen-controller';
+import ListenController from '@/controllers/core/listen-controller';
 import { wrapRoutes } from '@/utils';
 
 const router = express.Router();

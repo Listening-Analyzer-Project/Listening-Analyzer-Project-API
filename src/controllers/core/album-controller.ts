@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { IAlbum } from '@/type';
-import Album from '../../models/core/album-model';
+import Album from '@/models/core/album-model';
 
 const getAllAlbums = async (req: Request, res: Response) => {
   const albums = await Album.getAll();

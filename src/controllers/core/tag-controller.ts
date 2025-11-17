@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Tag from '../../models/core/tag-model';
+import Tag from '@/models/core/tag-model';
 import { ITag } from '@/type';
 
 const getAllTags = async (req: Request, res: Response) => {

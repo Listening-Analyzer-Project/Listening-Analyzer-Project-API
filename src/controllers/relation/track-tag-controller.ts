@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import TrackTag from '../../models/relation/track-tag-model';
+import TrackTag from '@/models/relation/track-tag-model';
 import { ITrackTag } from '@/type';
 
 const getAllTrackTags = async (req: Request, res: Response) => {

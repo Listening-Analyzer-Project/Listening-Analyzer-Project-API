@@ -1,5 +1,5 @@
 import express from 'express';
-import PlaylistTrackController from '../../controllers/relation/playlist-track-controller';
+import PlaylistTrackController from '@/controllers/relation/playlist-track-controller';
 import { wrapRoutes } from '@/utils';
 
 const router = express.Router();

@@ -1,5 +1,5 @@
 import express from 'express';
-import GeographicalRegionController from '../../controllers/core/geographical-region-controller';
+import GeographicalRegionController from '@/controllers/core/geographical-region-controller';
 import { wrapRoutes } from '@/utils';
 
 const router = express.Router();

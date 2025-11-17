@@ -1,5 +1,5 @@
 import express from 'express';
-import TagController from '../../controllers/core/tag-controller';
+import TagController from '@/controllers/core/tag-controller';
 import { wrapRoutes } from '@/utils';
 
 const router = express.Router();

@@ -1,5 +1,5 @@
 import { queryAll } from '@/utils';
-import Track from './../../../models/core/track-model';
+import Track from '@/models/core/track-model';
 
 const normalize = (s?: string | null) =>
   (s ?? '')

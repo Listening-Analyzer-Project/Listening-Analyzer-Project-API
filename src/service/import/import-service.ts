@@ -2,15 +2,15 @@ import { runTransaction, dropIndexes, createIndexes } from '@/utils';
 import { groupByTrack, groupedTitleAlbumPairs } from './helper/grouping-helper';
 import { findExistingTracks, checkExistsByColumn } from './helper/existing-check-helper';
 
-import GenreModel from './../../models/core/genre-model';
-import SubGenreModel from './../../models/core/sub-genre-model';
-import AlbumModel from './../../models/core/album-model';
-import ArtistModel from './../../models/core/artist-model';
-import TagModel from './../../models/core/tag-model';
-import TrackModel from './../../models/core/track-model';
-import TrackArtistModel from './../../models/relation/track-artist-model';
-import TrackTagModel from './../../models/relation/track-tag-model';
-import ListenModel from './../../models/core/listen-model';
+import GenreModel from '@/models/core/genre-model';
+import SubGenreModel from '@/models/core/sub-genre-model';
+import AlbumModel from '@/models/core/album-model';
+import ArtistModel from '@/models/core/artist-model';
+import TagModel from '@/models/core/tag-model';
+import TrackModel from '@/models/core/track-model';
+import TrackArtistModel from '@/models/relation/track-artist-model';
+import TrackTagModel from '@/models/relation/track-tag-model';
+import ListenModel from '@/models/core/listen-model';
 
 import type {
   CanonicalListen,

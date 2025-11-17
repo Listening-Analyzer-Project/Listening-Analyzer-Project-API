@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Track from '../../models/core/track-model';
+import Track from '@/models/core/track-model';
 import { ITrack } from '@/type';
 
 const getAllTracks = async (req: Request, res: Response) => {

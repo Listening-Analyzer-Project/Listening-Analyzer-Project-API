@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { deleteUserService } from '@/service';
-import User from '../../models/core/user-model';
+import User from '@/models/core/user-model';
 
 const deleteUser = async (req: Request, res: Response) => {
   const userId = Number(req.query.id);

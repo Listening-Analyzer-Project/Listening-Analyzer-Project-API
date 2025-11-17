@@ -1,5 +1,5 @@
 import express from 'express';
-import UserController from '../../controllers/core/user-controller';
+import UserController from '@/controllers/core/user-controller';
 import { wrapRoutes } from '@/utils';
 
 const router = express.Router();
