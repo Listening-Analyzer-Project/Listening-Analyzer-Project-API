@@ -69,6 +69,16 @@ const TrackTag = {
       message: `${info.changes ?? 0} track-tag relations deleted successfully`,
     };
   },
+
+  getTrackIdsWithTags(trackIds: number[]): ITrackTag[] {
+    if (!trackIds.length) return [];
+    const placeholders = trackIds.map(() => '?').join(',');
+    return queryAll(`
+      SELECT DISTINCT track_id
+      FROM track_tag
+      WHERE track_id IN (${placeholders})
+    `, trackIds);
+  },
 };
 
 export default TrackTag;

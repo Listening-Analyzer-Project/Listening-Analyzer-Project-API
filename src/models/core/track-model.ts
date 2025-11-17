@@ -163,6 +163,17 @@ const Track = {
     `;
     return queryAll<{ id: number }>(sql);
   },
+
+  markAsEdited(trackIds: number[]) {
+    if (!trackIds.length) return 0;
+    const placeholders = trackIds.map(() => '?').join(',');
+    const { changes } = runQuery(`
+      UPDATE tracks
+      SET is_edited = 1
+      WHERE id IN (${placeholders})
+    `, trackIds);
+    return changes;
+  },
 };
 
 export default Track;
