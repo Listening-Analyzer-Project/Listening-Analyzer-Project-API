@@ -8,6 +8,6 @@ const __dirname = path.dirname(__filename);
 const dbPath = path.resolve(__dirname, './../listening.db');
 
 // Avec better-sqlite3, on instancie directement la DB
-const db = new Database(dbPath, { verbose: console.log });
+const db = new Database(dbPath);
 
 export default db;

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { importService } from '@/service';
 import type { CanonicalListen } from '@/type';
+import { dropIndexes, createIndexes } from '@/utils';
 
 const importBatch = async (req: Request, res: Response) => {
   const batch = req.body as CanonicalListen[];
@@ -19,7 +20,19 @@ const importBatch = async (req: Request, res: Response) => {
   });
 };
 
+const dropDBIndexes = async (req: Request, res: Response) => {
+  await dropIndexes();
+  res.status(200).json({ success: true, message: 'Indexes supprimés.' });
+};
+
+const createDBIndexes = async (req: Request, res: Response) => {
+  await createIndexes();
+  res.status(200).json({ success: true, message: 'Indexes créés.' });
+};
+
 export default {
     importBatch,
+    dropDBIndexes,
+    createDBIndexes,
 };
 
