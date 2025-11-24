@@ -1,4 +1,4 @@
-import { runTransaction, dropIndexes, createIndexes } from '@/utils';
+import { runTransaction} from '@/utils';
 import { groupByTrack, groupedTitleAlbumPairs } from './helper/grouping-helper';
 import { findExistingTracks, checkExistsByColumn } from './helper/existing-check-helper';
 
@@ -58,8 +58,6 @@ export const importService = {
         insertedListens: 0,
       };
     }
-   
-    dropIndexes();
  
     // 1) Grouper par track (clé configurable)
     const groupsMap = groupByTrack(batch);
@@ -383,8 +381,6 @@ export const importService = {
         insertedListens += listensToInsert_new.length;
       }
     });
-
-    createIndexes();
 
     const result = {
       totalListens: batch.length,

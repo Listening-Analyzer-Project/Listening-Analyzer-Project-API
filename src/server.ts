@@ -11,6 +11,9 @@ const port = 3001;
 // Configuration CORS
 app.use(cors(corsOptions));
 
+// Taille limite pour les requêtes JSON
+app.use(express.json({ limit: '10mb' }));
+
 // Middleware pour parser le JSON
 app.use(express.json());
 
