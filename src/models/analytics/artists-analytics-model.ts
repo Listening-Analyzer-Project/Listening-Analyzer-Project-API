@@ -9,7 +9,7 @@ const ArtistAnalytics = {
     limit: number = 50,
     offset: number = 0
   ): IArtistAnalytics[] => {
-    const validOrderBy = ['artist_name','primary_artist_country','main_genre','valid_listens','invalid_listens','total_listens'];
+    const validOrderBy = ['artist_name', 'primary_artist_country', 'main_genre', 'valid_listens', 'invalid_listens', 'total_listens'];
     if (!validOrderBy.includes(order_by)) order_by = 'valid_listens';
     const direction = order_dir.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
 
