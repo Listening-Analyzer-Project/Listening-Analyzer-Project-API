@@ -4,6 +4,7 @@ import { IListenAnalytics } from '@/type';
 const ListensAnalytics = {
   getListens: (
     filters: {
+      user_ids?: string[];
       track_id?: string;
       is_valid?: boolean;
       platform?: string;
@@ -41,6 +42,11 @@ const ListensAnalytics = {
 
     console.log('isvalid:', filters);
 
+    if (filters.user_ids && filters.user_ids.length > 0) {
+      const placeholders = filters.user_ids.map(() => '?').join(', ');
+      whereClauses.push(`user_id IN (${placeholders})`);
+      params.push(...filters.user_ids);
+    }
     if (filters.track_id) {
       whereClauses.push(`track_id = ?`);
       params.push(filters.track_id);

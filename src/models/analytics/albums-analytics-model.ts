@@ -3,6 +3,7 @@ import { IAlbumAnalytics } from '@/type';
 
 const AlbumAnalytics = {
   getAlbumsAnalytics: (
+    user_ids?: string[],
     search: string = '',
     order_by: string = 'valid_listens',
     order_dir: string = 'desc',
@@ -14,11 +15,20 @@ const AlbumAnalytics = {
     const direction = order_dir.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
 
     const params: any[] = [];
-    let whereClause = '';
+    const whereClauses: string[] = [];
+
+    if (user_ids && user_ids.length > 0) {
+      const placeholders = user_ids.map(() => '?').join(', ');
+      whereClauses.push(`user_id IN (${placeholders})`);
+      params.push(...user_ids);
+    }
+
     if (search && search.trim() !== '') {
-      whereClause = `WHERE album_title LIKE ? OR all_artists LIKE ?`;
+      whereClauses.push(`(album_title LIKE ? OR all_artists LIKE ?)`);
       params.push(`%${search}%`, `%${search}%`);
     }
+
+    const whereClause = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
     const sql = `
       WITH album_stats AS (

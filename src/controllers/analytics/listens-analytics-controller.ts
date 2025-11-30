@@ -8,7 +8,11 @@ const getListensAnalytics = (req: Request, res: Response) => {
   const order_by = req.query.order_by?.toString() || 'listen_timestamp';
   const order_dir = req.query.order_dir?.toString() || 'desc';
 
+  const userIdsParam = req.query.user_ids?.toString();
+  const userIds = userIdsParam ? userIdsParam.split(',').map(id => id.trim()).filter(id => id) : undefined;
+
   const filters = {
+    user_ids: userIds,
     track_id: req.query.track_id?.toString(),
     is_valid: isValidParam === 'true' ? true : isValidParam === 'false' ? false : undefined,
     platform: req.query.platform?.toString(),

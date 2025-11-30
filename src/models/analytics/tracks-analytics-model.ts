@@ -3,23 +3,33 @@ import { ITrackAnalytics } from '@/type';
 
 const TrackAnalytics = {
   getTracksAnalytics: (
+    user_ids?: string[],
     search: string = '',
     order_by: string = 'valid_listens',
     order_dir: string = 'desc',
     limit: number = 50,
     offset: number = 0
   ): ITrackAnalytics[] => {
-    const validOrderBy = ['track_title','album_title','all_artists','genre_name','sub_genre_name','all_tags','valid_listens','invalid_listens','total_listens'];
+    const validOrderBy = ['track_title', 'album_title', 'all_artists', 'genre_name', 'sub_genre_name', 'all_tags', 'valid_listens', 'invalid_listens', 'total_listens'];
     if (!validOrderBy.includes(order_by)) order_by = 'valid_listens';
     const direction = order_dir.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
 
     const params: any[] = [];
-    let searchClause = '';
+    const whereClauses: string[] = [];
+
+    if (user_ids && user_ids.length > 0) {
+      const placeholders = user_ids.map(() => '?').join(', ');
+      whereClauses.push(`user_id IN (${placeholders})`);
+      params.push(...user_ids);
+    }
+
     if (search && search.trim() !== '') {
-      searchClause = `WHERE track_title LIKE ? OR album_title LIKE ? OR all_artists LIKE ? OR genre_name LIKE ? OR sub_genre_name LIKE ? OR all_tags LIKE ?`;
+      whereClauses.push(`(track_title LIKE ? OR album_title LIKE ? OR all_artists LIKE ? OR genre_name LIKE ? OR sub_genre_name LIKE ? OR all_tags LIKE ?)`);
       const pattern = `%${search}%`;
       params.push(pattern, pattern, pattern, pattern, pattern, pattern);
     }
+
+    const searchClause = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
     const sql = `
       WITH track_stats AS (
