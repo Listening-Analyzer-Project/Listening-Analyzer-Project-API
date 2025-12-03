@@ -40,8 +40,6 @@ const ListensAnalytics = {
     const params: any[] = [];
     const whereClauses: string[] = [];
 
-    console.log('isvalid:', filters);
-
     if (filters.user_ids && filters.user_ids.length > 0) {
       const placeholders = filters.user_ids.map(() => '?').join(', ');
       whereClauses.push(`user_id IN (${placeholders})`);
