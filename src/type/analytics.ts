@@ -85,3 +85,19 @@ export interface IListenAnalytics {
   incognito_mode?: boolean;
   total_count?: number;
 }
+
+export type SuggestionResult = {
+  type: 'track' | 'artist' | 'album' | 'tag';
+  value: string;
+}
+
+export interface SuggestionColumnConfig {
+  column: string;
+  type: 'track' | 'artist' | 'album' | 'tag';
+}
+
+export interface SuggestionTableConfig {
+  table: string;
+  suggestions: SuggestionColumnConfig[];
+  userIdsColumn?: string; // Optional: pour filtrer par user_ids si nécessaire
+}

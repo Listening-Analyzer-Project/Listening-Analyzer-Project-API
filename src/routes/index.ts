@@ -24,6 +24,7 @@ import listensAnalyticsRoutes from './analytics/listens-analytics-route';
 
 import importRoute from './other/import-route';
 import deleteUserRoute from './other/delete-user-route';
+import globalSuggestionRoute from './other/search-suggestion-route';
 
 
 const router = express.Router();
@@ -57,5 +58,6 @@ router.use('/analytics/listens', listensAnalyticsRoutes);
 // Routes other
 router.use('/import', importRoute);
 router.use('/delete-user', deleteUserRoute);
+router.use('/global-suggestion', globalSuggestionRoute);
 
 export default router;

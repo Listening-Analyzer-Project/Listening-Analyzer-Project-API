@@ -1,4 +1,4 @@
-import { queryAll, queryOne } from '@/utils';
+import { queryAll, buildSearchClause } from '@/utils';
 import { IListenAnalytics } from '@/type';
 
 const ListensAnalytics = {
@@ -69,17 +69,17 @@ const ListensAnalytics = {
     }
 
     // Filtre texte global
-    if (filters.search && filters.search.trim() !== '') {
-      const pattern = `%${filters.search}%`;
-      whereClauses.push(`(
-        track_title LIKE ?
-        OR album_title LIKE ?
-        OR primary_artist_name LIKE ?
-        OR genre_name LIKE ?
-        OR sub_genre_name LIKE ?
-        OR all_tags LIKE ?
-      )`);
-      params.push(pattern, pattern, pattern, pattern, pattern, pattern);
+    const searchResult = buildSearchClause(filters.search, [
+      'track_title',
+      'album_title',
+      'primary_artist_name',
+      'genre_name',
+      'sub_genre_name',
+      'all_tags'
+    ]);
+    if (searchResult.clause) {
+      whereClauses.push(searchResult.clause);
+      params.push(...searchResult.params);
     }
 
     const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';

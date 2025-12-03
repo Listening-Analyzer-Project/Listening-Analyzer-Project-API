@@ -1,4 +1,4 @@
-import { queryAll } from '@/utils';
+import { queryAll, buildSearchClause } from '@/utils';
 import { IAlbumAnalytics } from '@/type';
 
 const AlbumAnalytics = {
@@ -23,9 +23,10 @@ const AlbumAnalytics = {
       params.push(...user_ids);
     }
 
-    if (search && search.trim() !== '') {
-      whereClauses.push(`(album_title LIKE ? OR all_artists LIKE ?)`);
-      params.push(`%${search}%`, `%${search}%`);
+    const searchResult = buildSearchClause(search, ['album_title', 'all_artists']);
+    if (searchResult.clause) {
+      whereClauses.push(searchResult.clause);
+      params.push(...searchResult.params);
     }
 
     const whereClause = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
