@@ -21,34 +21,34 @@ export const buildSearchClause = (search: string | undefined, columns: string[])
         .replace(/\s+/g, ' ')
         .trim();
 
-    const andSegments = normalizedSearch.split(' ');
-    const andClauses: string[] = [];
+    const orSegments = normalizedSearch.split('|');
+    const orClauses: string[] = [];
     const params: string[] = [];
 
-    for (const segment of andSegments) {
-        const orSegments = segment.split('|');
-        const orClauses: string[] = [];
+    for (const segment of orSegments) {
+        const andSegments = segment.trim().split(' ');
+        const andClauses: string[] = [];
 
-        for (const term of orSegments) {
+        for (const term of andSegments) {
             const cleanTerm = term.trim();
             if (cleanTerm) {
                 const pattern = `%${cleanTerm}%`;
                 const termConditions = columns.map(col => `${col} LIKE ?`);
-                orClauses.push(`(${termConditions.join(' OR ')})`);
+                andClauses.push(`(${termConditions.join(' OR ')})`);
                 params.push(...columns.map(() => pattern));
             }
         }
 
-        if (orClauses.length > 0) {
-            andClauses.push(`(${orClauses.join(' OR ')})`);
+        if (andClauses.length > 0) {
+            orClauses.push(`(${andClauses.join(' AND ')})`);
         }
     }
 
-    if (andClauses.length === 0) {
+    if (orClauses.length === 0) {
         return { clause: '', params: [] };
     }
 
-    const clause = `(${andClauses.join(' AND ')})`;
+    const clause = `(${orClauses.join(' OR ')})`;
 
     return { clause, params };
 };
