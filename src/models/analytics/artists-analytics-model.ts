@@ -1,24 +1,35 @@
-import { queryAll } from '@/utils';
+import { queryAll, buildSearchClause } from '@/utils';
 import { IArtistAnalytics } from '@/type';
 
 const ArtistAnalytics = {
   getArtistsAnalytics: (
+    user_ids?: string[],
     search: string = '',
     order_by: string = 'valid_listens',
     order_dir: string = 'desc',
     limit: number = 50,
     offset: number = 0
   ): IArtistAnalytics[] => {
-    const validOrderBy = ['artist_name','primary_artist_country','main_genre','valid_listens','invalid_listens','total_listens'];
+    const validOrderBy = ['artist_name', 'primary_artist_country', 'main_genre', 'valid_listens', 'invalid_listens', 'total_listens'];
     if (!validOrderBy.includes(order_by)) order_by = 'valid_listens';
     const direction = order_dir.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
 
     const params: any[] = [];
-    let searchClause = '';
-    if (search && search.trim() !== '') {
-      searchClause = `WHERE primary_artist_name LIKE ? OR country_name LIKE ?`;
-      params.push(`%${search}%`, `%${search}%`);
+    const whereClauses: string[] = [];
+
+    if (user_ids && user_ids.length > 0) {
+      const placeholders = user_ids.map(() => '?').join(', ');
+      whereClauses.push(`user_id IN (${placeholders})`);
+      params.push(...user_ids);
     }
+
+    const searchResult = buildSearchClause(search, ['primary_artist_name', 'country_name']);
+    if (searchResult.clause) {
+      whereClauses.push(searchResult.clause);
+      params.push(...searchResult.params);
+    }
+
+    const searchClause = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
     const sql = `
       WITH artist_stats AS (

@@ -1,9 +1,10 @@
-import { queryAll, queryOne } from '@/utils';
+import { queryAll, buildSearchClause } from '@/utils';
 import { IListenAnalytics } from '@/type';
 
 const ListensAnalytics = {
   getListens: (
     filters: {
+      user_ids?: string[];
       track_id?: string;
       is_valid?: boolean;
       platform?: string;
@@ -39,8 +40,11 @@ const ListensAnalytics = {
     const params: any[] = [];
     const whereClauses: string[] = [];
 
-    console.log('isvalid:', filters);
-
+    if (filters.user_ids && filters.user_ids.length > 0) {
+      const placeholders = filters.user_ids.map(() => '?').join(', ');
+      whereClauses.push(`user_id IN (${placeholders})`);
+      params.push(...filters.user_ids);
+    }
     if (filters.track_id) {
       whereClauses.push(`track_id = ?`);
       params.push(filters.track_id);
@@ -63,17 +67,18 @@ const ListensAnalytics = {
     }
 
     // Filtre texte global
-    if (filters.search && filters.search.trim() !== '') {
-      const pattern = `%${filters.search}%`;
-      whereClauses.push(`(
-        track_title LIKE ?
-        OR album_title LIKE ?
-        OR primary_artist_name LIKE ?
-        OR genre_name LIKE ?
-        OR sub_genre_name LIKE ?
-        OR all_tags LIKE ?
-      )`);
-      params.push(pattern, pattern, pattern, pattern, pattern, pattern);
+    const searchResult = buildSearchClause(filters.search, [
+      'track_title',
+      'album_title',
+      'primary_artist_name',
+      'listen_timestamp',
+      'genre_name',
+      'sub_genre_name',
+      'all_tags'
+    ]);
+    if (searchResult.clause) {
+      whereClauses.push(searchResult.clause);
+      params.push(...searchResult.params);
     }
 
     const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';

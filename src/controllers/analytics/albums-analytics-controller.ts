@@ -8,8 +8,10 @@ const getAlbumsAnalytics = (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit?.toString() || '50', 10);
     const offset = parseInt(req.query.offset?.toString() || '0', 10);
 
+    const userIdsParam = req.query.user_ids?.toString();
+    const userIds = userIdsParam ? userIdsParam.split(',').map(id => id.trim()).filter(id => id) : undefined;
 
-    const results = AlbumAnalytics.getAlbumsAnalytics(search, order_by, order_dir, limit, offset);
+    const results = AlbumAnalytics.getAlbumsAnalytics(userIds, search, order_by, order_dir, limit, offset);
 
     res.json({
         total_count: results.length > 0 ? results[0].total_count : 0,

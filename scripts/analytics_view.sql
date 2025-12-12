@@ -74,7 +74,15 @@ LEFT JOIN sub_genres sg ON t.sub_genre_id = sg.id
 LEFT JOIN genres g ON sg.genre_id = g.id
 
 -- Artiste principal (is_primary = 1)
-LEFT JOIN track_artists ta ON ta.track_id = t.id AND ta.is_primary = 1
+LEFT JOIN (
+    SELECT track_id, artist_id
+    FROM (
+        SELECT track_id, artist_id,
+               ROW_NUMBER() OVER (PARTITION BY track_id ORDER BY is_primary DESC, artist_id ASC) as rn
+        FROM track_artists
+    )
+    WHERE rn = 1
+) ta ON ta.track_id = t.id
 LEFT JOIN artists pa ON ta.artist_id = pa.id
 
 -- Géographie
