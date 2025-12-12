@@ -71,6 +71,7 @@ const ListensAnalytics = {
       'track_title',
       'album_title',
       'primary_artist_name',
+      'listen_timestamp',
       'genre_name',
       'sub_genre_name',
       'all_tags'
