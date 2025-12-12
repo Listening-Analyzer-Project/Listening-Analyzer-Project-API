@@ -65,3 +65,17 @@ VALUES
   ('2024-10-03T08:00:00Z', 'Spotify', 180000, 2, 2, 'endplay'),
   ('2024-10-04T07:00:00Z', 'YouTube Music', 250000, 3, 1, 'trackdone'),
   ('2024-10-04T08:00:00Z', 'Spotify', 5000, 3, 2, 'clicknext');
+
+-- Categories
+INSERT INTO categories (name)
+VALUES
+('Vie professionnelle'),
+('Vie amoureuse'),
+('Vie publique');
+
+-- Events
+INSERT INTO events (title, user_id, category_id, start_date, end_date, description)
+VALUES
+('Event 1', 1, 1, '2024-10-01', '2024-10-01', 'Description 1'),
+('Event 2', 2, 2, '2020-10-03', '2025-10-04', 'Description 2'),
+('Event 3', 3, 3, '2024-10-05', '2024-11-20', 'Description 3');
