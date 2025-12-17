@@ -25,7 +25,7 @@ export interface IEventWithCategory {
     id: number;
     name: string;
   } | null;
-  user_id?: number;
+  user_name?: string;
 }
 
 // =======================
