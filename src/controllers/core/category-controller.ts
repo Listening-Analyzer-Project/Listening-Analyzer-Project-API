@@ -9,7 +9,6 @@ const getAllCategories = async (req: Request, res: Response) => {
 
 const getCategoryById = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const category = await Category.getById(id);
   if (!category) throw { status: 404, message: 'Catégorie non trouvée' };
   res.json(category);
@@ -23,16 +22,16 @@ const createCategory = async (req: Request, res: Response) => {
 
 const updateCategory = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const categoryData: ICategory = req.body;
   const updated = await Category.update(id, categoryData);
+  if (!updated) throw { status: 404, message: 'Catégorie non trouvée' };
   res.json(updated);
 };
 
 const deleteCategory = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const deleted = await Category.delete(id);
+  if (!deleted) throw { status: 404, message: 'Catégorie non trouvée' };
   res.json(deleted);
 };
 

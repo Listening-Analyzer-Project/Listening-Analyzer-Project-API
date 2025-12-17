@@ -12,7 +12,6 @@ const getAllGenres = async (req: Request, res: Response) => {
 
 const getGenreById = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const genre = await Genre.getById(id);
   if (!genre) throw { status: 404, message: 'Genre non trouvé' };
   res.json(genre);
@@ -26,16 +25,16 @@ const createGenre = async (req: Request, res: Response) => {
 
 const updateGenre = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const genreData: IGenre = req.body;
   const updated = await Genre.update(id, genreData);
+  if (!updated) throw { status: 404, message: 'Genre non trouvé' };
   res.json(updated);
 };
 
 const deleteGenre = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const deleted = await Genre.delete(id);
+  if (!deleted) throw { status: 404, message: 'Genre non trouvé' };
   res.json(deleted);
 };
 

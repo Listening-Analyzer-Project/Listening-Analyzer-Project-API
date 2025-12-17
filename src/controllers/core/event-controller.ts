@@ -13,7 +13,6 @@ const getAllEvents = async (req: Request, res: Response) => {
 
 const getEventById = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const event = await Event.getById(id);
   if (!event) throw { status: 404, message: 'Événement non trouvé' };
   res.json(event);
@@ -27,16 +26,16 @@ const createEvent = async (req: Request, res: Response) => {
 
 const updateEvent = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const eventData: IEvent = req.body;
   const updatedEvent = await Event.update(id, eventData);
+  if (!updatedEvent) throw { status: 404, message: 'Événement non trouvé' };
   res.json(updatedEvent);
 };
 
 const deleteEvent = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
-  await Event.delete(id);
+  const deleted = await Event.delete(id);
+  if (!deleted) throw { status: 404, message: 'Événement non trouvé' };
   res.json({ id });
 };
 

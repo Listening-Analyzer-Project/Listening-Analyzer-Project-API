@@ -9,7 +9,6 @@ const getAllAlbums = async (req: Request, res: Response) => {
 
 const getAlbumById = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const album = await Album.getById(id);
   if (!album) throw { status: 404, message: 'Album non trouvé' };
   res.json(album);
@@ -23,16 +22,16 @@ const createAlbum = async (req: Request, res: Response) => {
 
 const updateAlbum = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const albumData: IAlbum = req.body;
   const updated = await Album.update(id, albumData);
+  if (!updated) throw { status: 404, message: 'Album non trouvé' };
   res.json(updated);
 };
 
 const deleteAlbum = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const deleted = await Album.delete(id);
+  if (!deleted) throw { status: 404, message: 'Album non trouvé' };
   res.json(deleted);
 };
 
