@@ -9,7 +9,6 @@ const getAllListens = async (req: Request, res: Response) => {
 
 const getListenById = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const listen = await Listen.getById(id);
   if (!listen) throw { status: 404, message: 'Écoute non trouvée' };
   res.json(listen);
@@ -23,16 +22,16 @@ const createListen = async (req: Request, res: Response) => {
 
 const updateListen = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const listenData: IListen = req.body;
   const updated = await Listen.update(id, listenData);
+  if (!updated) throw { status: 404, message: 'Écoute non trouvée' };
   res.json(updated);
 };
 
 const deleteListen = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const deleted = await Listen.delete(id);
+  if (!deleted) throw { status: 404, message: 'Écoute non trouvée' };
   res.json(deleted);
 };
 

@@ -9,7 +9,6 @@ const getAllTracks = async (req: Request, res: Response) => {
 
 const getTrackById = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const track = await Track.getById(id);
   if (!track) throw { status: 404, message: 'Morceau non trouvé' };
   res.json(track);
@@ -23,16 +22,16 @@ const createTrack = async (req: Request, res: Response) => {
 
 const updateTrack = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const trackData: ITrack = req.body;
   const updated = await Track.update(id, trackData);
+  if (!updated) throw { status: 404, message: 'Morceau non trouvé' };
   res.json(updated);
 };
 
 const deleteTrack = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const deleted = await Track.delete(id);
+  if (!deleted) throw { status: 404, message: 'Morceau non trouvé' };
   res.json(deleted);
 };
 

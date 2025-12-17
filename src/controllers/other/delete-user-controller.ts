@@ -4,7 +4,6 @@ import User from '@/models/core/user-model';
 
 const deleteUser = async (req: Request, res: Response) => {
   const userId = Number(req.query.id);
-  if (!userId) throw { status: 400, message: 'ID manquant' };
 
   const user = await User.getById(userId);
   if (!user) throw { status: 404, message: 'Utilisateur non trouvé' };
