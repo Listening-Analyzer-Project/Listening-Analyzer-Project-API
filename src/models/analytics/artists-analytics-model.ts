@@ -23,7 +23,7 @@ const ArtistAnalytics = {
       params.push(...user_ids);
     }
 
-    const searchResult = buildSearchClause(search, ['primary_artist_name', 'country_name']);
+    const searchResult = buildSearchClause(search, ['all_artists', 'country_name']);
     if (searchResult.clause) {
       whereClauses.push(searchResult.clause);
       params.push(...searchResult.params);
