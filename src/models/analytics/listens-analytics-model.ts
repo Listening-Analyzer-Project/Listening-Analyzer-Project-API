@@ -70,7 +70,7 @@ const ListensAnalytics = {
     const searchResult = buildSearchClause(filters.search, [
       'track_title',
       'album_title',
-      'primary_artist_name',
+      'all_artists',
       'listen_timestamp',
       'genre_name',
       'sub_genre_name',
