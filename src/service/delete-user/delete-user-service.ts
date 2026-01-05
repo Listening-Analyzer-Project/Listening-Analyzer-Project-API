@@ -1,7 +1,8 @@
-import { runTransaction, queryAll } from '@/utils';
+import { runTransaction } from '@/utils';
 import ListenModel from '@/models/core/listen-model';
 import PlaylistModel from '@/models/core/playlist-model';
 import UserModel from '@/models/core/user-model';
+import EventModel from '@/models/core/event-model';
 import { cleanupHelper } from './helper/cleanup-helper';
 import { deleteInBatches } from './helper/batch-helper';
 
@@ -14,6 +15,7 @@ export const deleteUserService = {
   async deleteUserData(userId: number, deleteUser: boolean) {
 
     let deletedListens = 0;
+    let deletedEvents = 0;
     let deletedTracks = 0;
     let deletedAlbums = 0;
     let deletedArtists = 0;
@@ -22,38 +24,45 @@ export const deleteUserService = {
     let deletedTrackRelations = 0;
     let deletedUser = 0;
 
-    await runTransaction( () => {
-        const userListens = ListenModel.getAllbyUserId(userId);
-        const listenIds = userListens.map(l => l.id)
-            .filter(id => id !== undefined) as number[];
+    await runTransaction(() => {
+      const userListens = ListenModel.getAllbyUserId(userId);
+      const listenIds = userListens.map(l => l.id)
+        .filter(id => id !== undefined) as number[];
 
-        if (listenIds.length > 0) {
-            deletedListens = deleteInBatches(listenIds, ListenModel);
-        }
+      if (listenIds.length > 0) {
+        deletedListens = deleteInBatches(listenIds, ListenModel);
+      }
 
-        const userPlaylists = PlaylistModel.getAllbyUserId(userId);
-        const playlistIds = userPlaylists.map(p => p.id)
-            .filter(id => id !== undefined) as number[];
-        
-        
-        if (playlistIds.length > 0) {
-            deletedPlaylists = deleteInBatches(playlistIds, PlaylistModel);
-        }
+      const userEvents = EventModel.getAllbyUserId(userId);
+      const eventIds = userEvents.map(e => e.id).filter(id => id !== undefined) as number[];
 
-        if (playlistIds.length > 0) {
-          const changes = cleanupHelper.deleteRelationsByPlaylistIds(playlistIds);
-          deletedPlaylistRelations = changes;
-          deletedPlaylists = deleteInBatches(playlistIds, PlaylistModel);
-        }
+      if (eventIds.length > 0) {
+        deletedEvents = deleteInBatches(eventIds, EventModel);
+      }
 
-        [deletedTrackRelations, deletedTracks] = cleanupHelper.removeUnusedTracks();
-        deletedAlbums = cleanupHelper.removeOrphanAlbums();
-        deletedArtists = cleanupHelper.removeOrphanArtists();
+      const userPlaylists = PlaylistModel.getAllbyUserId(userId);
+      const playlistIds = userPlaylists.map(p => p.id)
+        .filter(id => id !== undefined) as number[];
 
-        if (deleteUser) {
-            const { changes } = UserModel.delete(userId);
-            deletedUser = changes ?? 0;
-        }
+
+      if (playlistIds.length > 0) {
+        deletedPlaylists = deleteInBatches(playlistIds, PlaylistModel);
+      }
+
+      if (playlistIds.length > 0) {
+        const changes = cleanupHelper.deleteRelationsByPlaylistIds(playlistIds);
+        deletedPlaylistRelations = changes;
+        deletedPlaylists = deleteInBatches(playlistIds, PlaylistModel);
+      }
+
+      [deletedTrackRelations, deletedTracks] = cleanupHelper.removeUnusedTracks();
+      deletedAlbums = cleanupHelper.removeOrphanAlbums();
+      deletedArtists = cleanupHelper.removeOrphanArtists();
+
+      if (deleteUser) {
+        const { changes } = UserModel.delete(userId);
+        deletedUser = changes ?? 0;
+      }
     });
 
     return {
@@ -61,6 +70,7 @@ export const deleteUserService = {
       userId,
       deleteUser,
       deletedListens,
+      deletedEvents,
       deletedTracks,
       deletedAlbums,
       deletedArtists,
