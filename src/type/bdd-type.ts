@@ -43,6 +43,7 @@ export interface IAlbum {
 export interface ITag {
   id?: number;
   name: string;
+  color_index: number;
 }
 
 // =======================

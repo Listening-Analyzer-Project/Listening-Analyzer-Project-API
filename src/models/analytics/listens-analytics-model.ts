@@ -1,5 +1,5 @@
-import { queryAll, buildSearchClause } from '@/utils';
 import { IListenAnalytics } from '@/type';
+import { buildSearchClause, queryAll } from '@/utils';
 
 const ListensAnalytics = {
   getListens: (
@@ -102,7 +102,12 @@ const ListensAnalytics = {
       LIMIT ? OFFSET ?;
     `;
 
-    return queryAll<IListenAnalytics>(sql, [...params, limit, offset]);
+    const results = queryAll<any>(sql, [...params, limit, offset]);
+
+    return results.map(row => ({
+      ...row,
+      all_tags: row.all_tags ? JSON.parse(row.all_tags) : []
+    })) as IListenAnalytics[];
   }
 };
 

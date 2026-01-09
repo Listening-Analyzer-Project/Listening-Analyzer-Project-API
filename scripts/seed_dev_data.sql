@@ -20,7 +20,6 @@ INSERT INTO sub_genres (name, genre_id)
 VALUES ('Synthpop', 1), ('Trap', 2), ('Indie Rock', 3);
 
 -- Ambiances / tags
-INSERT INTO tag (name) VALUES ('Chill'), ('Workout'), ('Focus');
 
 -- Artistes
 INSERT INTO artists (name, image_uri, popularity, country_id, type, birth)

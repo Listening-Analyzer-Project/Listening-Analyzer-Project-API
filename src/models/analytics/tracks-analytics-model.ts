@@ -1,5 +1,5 @@
-import { queryAll, buildSearchClause } from '@/utils';
 import { ITrackAnalytics } from '@/type';
+import { buildSearchClause, queryAll } from '@/utils';
 
 const TrackAnalytics = {
   getTracksAnalytics: (
@@ -69,7 +69,12 @@ const TrackAnalytics = {
       LIMIT ? OFFSET ?;
     `;
 
-    return queryAll<ITrackAnalytics>(sql, [...params, limit, offset]);
+    const results = queryAll<any>(sql, [...params, limit, offset]);
+
+    return results.map(row => ({
+      ...row,
+      all_tags: row.all_tags ? JSON.parse(row.all_tags) : []
+    })) as ITrackAnalytics[];
   }
 };
 

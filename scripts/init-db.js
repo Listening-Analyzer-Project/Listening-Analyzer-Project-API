@@ -1,4 +1,5 @@
 import Database from "better-sqlite3";
+import "dotenv/config";
 import fs from "fs";
 
 const db = new Database("listening.db");
@@ -11,7 +12,12 @@ db.exec(schema);
 const analyticsView = fs.readFileSync("./scripts/analytics_view.sql", "utf8");
 db.exec(analyticsView);
 
-const initialData = fs.readFileSync("./scripts/seed_dev_data.sql", "utf8");
-db.exec(initialData);
+const initialProdData = fs.readFileSync("./scripts/seed_prod_data.sql", "utf8");
+db.exec(initialProdData);
+
+if (process.env.STATUS === "dev") {
+  const initialDevData = fs.readFileSync("./scripts/seed_dev_data.sql", "utf8");
+  db.exec(initialDevData);
+}
 
 console.log("✅ Base SQLite initialisée !");

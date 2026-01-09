@@ -42,7 +42,7 @@ export interface ITrackAnalytics {
   artists: string | null;
   genre_name: string | null;
   sub_genre_name: string | null;
-  tags: string | null;
+  all_tags: { name: string; color_index: number }[] | null;
   valid_listens: number;
   invalid_listens: number;
   total_listens: number;
@@ -83,6 +83,7 @@ export interface IListenAnalytics {
   skipped?: boolean;
   offline?: boolean;
   incognito_mode?: boolean;
+  all_tags?: { name: string; color_index: number }[] | null;
   total_count?: number;
 }
 
