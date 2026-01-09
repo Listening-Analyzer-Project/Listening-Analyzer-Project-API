@@ -28,14 +28,14 @@ const updateEvent = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const eventData: IEvent = req.body;
   const updatedEvent = await Event.update(id, eventData);
-  if (!updatedEvent) throw { status: 404, message: 'Événement non trouvé' };
+  if (updatedEvent.changes === 0) throw { status: 404, message: 'Événement non trouvé' };
   res.json(updatedEvent);
 };
 
 const deleteEvent = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const deleted = await Event.delete(id);
-  if (!deleted) throw { status: 404, message: 'Événement non trouvé' };
+  if (deleted.changes === 0) throw { status: 404, message: 'Événement non trouvé' };
   res.json({ id });
 };
 

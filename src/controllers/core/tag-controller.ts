@@ -24,14 +24,14 @@ const updateTag = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const tagData: ITag = req.body;
   const updated = await Tag.update(id, tagData);
-  if (!updated) throw { status: 404, message: 'Tag non trouvé' };
+  if (updated.changes === 0) throw { status: 404, message: 'Tag non trouvé' };
   res.json(updated);
 };
 
 const deleteTag = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const deleted = await Tag.delete(id);
-  if (!deleted) throw { status: 404, message: 'Tag non trouvé' };
+  if (deleted.changes === 0) throw { status: 404, message: 'Tag non trouvé' };
   res.json(deleted);
 };
 

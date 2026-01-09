@@ -24,14 +24,14 @@ const updateUser = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const userData: IUser = req.body;
   const updated = await User.update(id, userData);
-  if (!updated) throw { status: 404, message: 'Utilisateur non trouvé' };
+  if (updated.changes === 0) throw { status: 404, message: 'Utilisateur non trouvé' };
   res.json(updated);
 };
 
 const deleteUser = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const deleted = await User.delete(id);
-  if (!deleted) throw { status: 404, message: 'Utilisateur non trouvé' };
+  if (deleted.changes === 0) throw { status: 404, message: 'Utilisateur non trouvé' };
   res.json(deleted);
 };
 

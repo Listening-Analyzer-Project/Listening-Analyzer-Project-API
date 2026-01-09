@@ -24,14 +24,14 @@ const updateListen = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const listenData: IListen = req.body;
   const updated = await Listen.update(id, listenData);
-  if (!updated) throw { status: 404, message: 'Écoute non trouvée' };
+  if (updated.changes === 0) throw { status: 404, message: 'Écoute non trouvée' };
   res.json(updated);
 };
 
 const deleteListen = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const deleted = await Listen.delete(id);
-  if (!deleted) throw { status: 404, message: 'Écoute non trouvée' };
+  if (deleted.changes === 0) throw { status: 404, message: 'Écoute non trouvée' };
   res.json(deleted);
 };
 

@@ -24,14 +24,14 @@ const updateRegion = async (req: Request, res: Response) => {
     const id = Number(req.query.id);
     const updatedRegion: IGeographicalRegion = req.body;
     const result = await GeographicalRegion.update(id, updatedRegion);
-    if (!result) throw { status: 404, message: 'Region non trouvée' };
+    if (result.changes === 0) throw { status: 404, message: 'Region non trouvée' };
     res.json(result);
 };
 
 const deleteRegion = async (req: Request, res: Response) => {
     const id = Number(req.query.id);
     const result = await GeographicalRegion.delete(id);
-    if (!result) throw { status: 404, message: 'Region non trouvée' };
+    if (result.changes === 0) throw { status: 404, message: 'Region non trouvée' };
     res.json(result);
 };
 

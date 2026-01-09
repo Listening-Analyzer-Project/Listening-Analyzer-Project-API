@@ -170,6 +170,17 @@ export interface ITrack {
 }
 
 // =======================
+// Jobs
+// =======================
+export interface IJob {
+  id?: number;
+  name: string;
+  user_id: number;
+  progress: number;
+  phase: number;
+}
+
+// =======================
 // Schéma global de la base
 // =======================
 export interface IDatabaseSchema {

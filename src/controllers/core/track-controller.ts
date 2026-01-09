@@ -24,14 +24,14 @@ const updateTrack = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const trackData: ITrack = req.body;
   const updated = await Track.update(id, trackData);
-  if (!updated) throw { status: 404, message: 'Morceau non trouvé' };
+  if (updated.changes === 0) throw { status: 404, message: 'Morceau non trouvé' };
   res.json(updated);
 };
 
 const deleteTrack = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const deleted = await Track.delete(id);
-  if (!deleted) throw { status: 404, message: 'Morceau non trouvé' };
+  if (deleted.changes === 0) throw { status: 404, message: 'Morceau non trouvé' };
   res.json(deleted);
 };
 

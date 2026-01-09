@@ -2,9 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import User from '@/models/core/user-model';
 import ListenModel from '@/models/core/listen-model';
 
-type UserIdStrategy = 'user_from_query' | 'user_from_body' | 'listen_from_query';
-
-export const checkSynchroStatus = (strategy: UserIdStrategy) => {
+export const checkSynchroStatus = (strategy: string) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         let userId: number | undefined;
 

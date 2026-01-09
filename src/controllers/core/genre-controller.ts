@@ -27,14 +27,14 @@ const updateGenre = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const genreData: IGenre = req.body;
   const updated = await Genre.update(id, genreData);
-  if (!updated) throw { status: 404, message: 'Genre non trouvé' };
+  if (updated.changes === 0) throw { status: 404, message: 'Genre non trouvé' };
   res.json(updated);
 };
 
 const deleteGenre = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const deleted = await Genre.delete(id);
-  if (!deleted) throw { status: 404, message: 'Genre non trouvé' };
+  if (deleted.changes === 0) throw { status: 404, message: 'Genre non trouvé' };
   res.json(deleted);
 };
 
