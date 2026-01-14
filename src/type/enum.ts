@@ -21,3 +21,7 @@ export enum syncroStatus {
     OTHER_API_SYNCED = 5,
     FULL_SYNCED = 6, // Spotify
 }
+
+export enum JobType {
+    IMPORT = 0,
+}

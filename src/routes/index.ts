@@ -26,7 +26,6 @@ import listensAnalyticsRoutes from './analytics/listens-analytics-route';
 import importRoute from './other/import-route';
 import deleteUserRoute from './other/delete-user-route';
 import globalSuggestionRoute from './other/search-suggestion-route';
-import triggerJobsRoute from './other/trigger-jobs-route';
 
 
 const router = express.Router();
@@ -62,6 +61,5 @@ router.use('/analytics/listens', listensAnalyticsRoutes);
 router.use('/import', importRoute);
 router.use('/delete-user', deleteUserRoute);
 router.use('/global-suggestion', globalSuggestionRoute);
-router.use('/trigger-jobs', triggerJobsRoute);
 
 export default router;

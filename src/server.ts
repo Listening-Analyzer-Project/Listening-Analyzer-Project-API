@@ -3,7 +3,10 @@ import routes from './routes';
 import { errorHandler } from '@/middleware';
 import cors from 'cors';
 import { corsOptions } from './cors.config';
+import JobManager from '@/service/job-manager';
 
+// Initialisation du JobManager
+JobManager.initialize();
 
 const app = express();
 const port = 3001;
