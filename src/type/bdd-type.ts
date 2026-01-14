@@ -178,6 +178,7 @@ export interface IJob {
   user_id: number;
   progress: number;
   phase: number;
+  type: number;
 }
 
 // =======================

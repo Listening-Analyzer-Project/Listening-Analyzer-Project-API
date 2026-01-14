@@ -6,6 +6,7 @@ export const createJobSchema = z.object({
         user_id: z.coerce.number().int().positive(),
         progress: z.coerce.number().int().min(0).max(100),
         phase: z.coerce.number().int().min(0).max(100),
+        type: z.coerce.number().int().min(0).max(100),
     }),
 });
 
@@ -18,6 +19,7 @@ export const updateJobSchema = z.object({
         user_id: z.coerce.number().int().positive(),
         progress: z.coerce.number().int().min(0).max(100),
         phase: z.coerce.number().int().min(0).max(100),
+        type: z.coerce.number().int().min(0).max(100),
     }),
 });
 

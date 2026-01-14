@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { addPostImportJob } from '@/queue/import-queue';
+import { addPostImportJob } from '@/service/queue/import-queue';
 
 const triggerPostImportJobs = async (req: Request, res: Response) => {
     const userId = Number(req.query.id);
