@@ -58,7 +58,12 @@ SELECT
 
   -- Liste des tags associés
   (
-    SELECT GROUP_CONCAT(tag.name, ', ')
+    SELECT json_group_array(
+      json_object(
+        'name', tag.name, 
+        'color_index', IFNULL(tag.color_index, 0)
+      )
+    )
     FROM track_tag tt
     JOIN tag ON tt.tag_id = tag.id
     WHERE tt.track_id = t.id

@@ -1,5 +1,5 @@
-import { queryAll, queryOne, runQuery } from '@/utils';
 import { IEvent, IEventWithCategory } from '@/type';
+import { queryAll, queryOne, runQuery } from '@/utils';
 
 const Event = {
 
@@ -50,7 +50,7 @@ const Event = {
     limit,
     offset,
   }: {
-    user_id?: number;
+    user_id?: number[];
     category_id?: number;
     limit?: number;
     offset?: number;
@@ -62,15 +62,21 @@ const Event = {
         e.start_date,
         e.end_date,
         e.description,
-        e.user_id,
-        c.id AS "category.id",
-        c.name AS "category.name"
+        u.name AS "user_name",
+        c.id AS "category_id",
+        c.name AS "category_name"
       FROM events e
       LEFT JOIN categories c ON e.category_id = c.id
+      LEFT JOIN user u ON e.user_id = u.id
       WHERE 1=1
-      AND e.user_id = ?
     `;
-    const params: any[] = [user_id];
+    const params: any[] = [];
+    
+    if (user_id && user_id.length > 0) {
+      const placeholders = user_id.map(() => '?').join(',');
+      sql += ` AND (e.user_id IN (${placeholders}) OR e.user_id IS NULL)`;
+      params.push(...user_id);
+    }
 
     if (category_id !== undefined) {
       sql += ' AND e.category_id = ?';

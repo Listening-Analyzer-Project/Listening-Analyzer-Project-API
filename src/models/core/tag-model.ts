@@ -1,5 +1,5 @@
-import { queryAll, queryOne, runQuery, runTransaction } from '@/utils';
 import { ITag } from '@/type';
+import { queryAll, queryOne, runQuery, runTransaction } from '@/utils';
 
 const Tag = {
   /** -----------------------------
@@ -7,8 +7,8 @@ const Tag = {
    *  ----------------------------- */
   _insertTag(tag: ITag) {
     return runQuery(
-      `INSERT INTO tag (name) VALUES (?)`,
-      [tag.name]
+      `INSERT INTO tag (name, color_index) VALUES (?, ?)`,
+      [tag.name, tag.color_index ?? 0]
     );
   },
 
@@ -53,8 +53,8 @@ const Tag = {
 
   update: (id: number, tag: ITag) => {
     const info = runQuery(
-      `UPDATE tag SET name = ? WHERE id = ?`,
-      [tag.name, id]
+      `UPDATE tag SET name = ?, color_index = ? WHERE id = ?`,
+      [tag.name, tag.color_index ?? 0, id]
     );
     return { changes: info.changes };
   },

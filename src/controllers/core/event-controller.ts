@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
 import Event from '@/models/core/event-model';
 import { IEvent } from '@/type';
+import { Request, Response } from 'express';
 
 // =======================
 // CRUD
@@ -44,11 +44,12 @@ const deleteEvent = async (req: Request, res: Response) => {
 // =======================
 
 const getEventsWithCategory = async (req: Request, res: Response) => {
-  const { user_id, category_id, limit, offset } = req.query;
-  if (!user_id) throw { status: 400, message: 'user_id manquant' };
+  const userIdsParam = req.query.user_ids?.toString();
+  const userIds = userIdsParam ? userIdsParam.split(',').map(id => id.trim()).filter(id => id) : undefined;
+  const { category_id, limit, offset } = req.query;
 
   const events = Event.getAllWithCategory({
-    user_id: Number(user_id),
+    user_id: userIds ? userIds.map(id => Number(id)) : undefined,
     category_id: category_id ? Number(category_id) : undefined,
     limit: limit ? Number(limit) : 50,
     offset: offset ? Number(offset) : 0,
