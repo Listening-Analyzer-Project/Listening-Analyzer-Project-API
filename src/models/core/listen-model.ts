@@ -72,9 +72,16 @@ const Listen = {
     };
   },
 
-  getAllbyUserId: (userId: number) => { 
+  getAllbyUserId: (userId: number) => {
     return queryAll<IListen>('SELECT * FROM listens WHERE user_id = ?', [userId]);
-  }
+  },
+
+  getRowsAfterId: (id: number, limit: number, userId: number) => {
+    return queryAll<IListen>(
+      'SELECT * FROM listens WHERE id > ? AND user_id = ? ORDER BY id ASC LIMIT ?',
+      [id, userId, limit]
+    );
+  },
 };
 
 export default Listen;

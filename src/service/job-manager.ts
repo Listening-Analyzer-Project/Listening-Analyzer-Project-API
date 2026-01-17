@@ -1,14 +1,11 @@
 import JobModel from '@/models/core/jobs-model';
-import { IJob } from '@/type';
-import { JobType, basicJobPhase } from '@/type/enum';
-import { importQueueService } from '@/service/queue/import-queue';
-
-type JobProcessor = (job: IJob) => Promise<void>;
+import { JobType, basicJobPhase } from '@/type';
+import { Worker, SHARE_ENV } from 'node:worker_threads';
 
 class JobManager {
     private static instance: JobManager;
     private isProcessing: boolean = false;
-    private processors: Map<JobType, JobProcessor> = new Map();
+    private worker: Worker | null = null;
 
     private constructor() { }
 
@@ -20,19 +17,93 @@ class JobManager {
     }
 
     /**
-     * Initialisation du manager: enregistre les processeurs et lance la file d'attente
+     * Initialisation du manager et démarrage du worker persistant
      */
     public initialize() {
-        console.log('[JobManager] Initializing and registering processors...');
-        this.registerProcessor(JobType.IMPORT, importQueueService.processImportJob);
+        console.log('[JobManager] Initializing JobManager...');
+        this.getOrCreateWorker();
         this.processNext();
     }
 
     /**
-     * Map a job type to a specific processing function
+     * Crée ou récupère le worker persistant
      */
-    public registerProcessor(type: JobType, processor: JobProcessor) {
-        this.processors.set(type, processor);
+    private getOrCreateWorker(): Worker {
+        if (this.worker) return this.worker;
+
+        console.log('[JobManager] Spawning a new persistent worker thread...');
+
+        const isTs = import.meta.url.endsWith('.ts');
+        const extension = isTs ? '.ts' : '.js';
+        const workerFileName = `./job-worker${extension}`;
+
+        const workerPath = import.meta.resolve(workerFileName);
+
+        if (isTs) {
+            const bootstrapScript = `
+               import('tsx/esm/api').then(({ register }) => {
+                    register();
+                    return import('${workerPath}');
+                }).catch(err => {
+                    console.error('Failed to load worker:', err);
+                    process.exit(1);
+                });
+            `;
+
+            this.worker = new Worker(bootstrapScript, {
+                eval: true,
+                env: SHARE_ENV
+            });
+        } else {
+            // En production (fichiers compilés.js), pas besoin de loader spécial
+            this.worker = new Worker(new URL(workerPath));
+        }
+
+        this.worker.on('message', (message) => {
+            const nextJob = JobModel.getNextJob();
+            if (!nextJob && message.type !== 'ready') return;
+
+            if (message.type === 'progress') {
+                JobModel.update(nextJob!.id!, {
+                    progress: message.value,
+                    last_processed_id: message.lastId,
+                    phase: message.phase
+                });
+            } else if (message.type === 'completed') {
+                if (nextJob) {
+                    JobModel.delete(nextJob.id!);
+                    console.log(`[JobManager] Job completed: ${nextJob.name} (ID: ${nextJob.id})`);
+                }
+                this.isProcessing = false;
+                this.processNext();
+            } else if (message.type === 'error') {
+                console.error(`[JobManager] Worker reported error:`, message.error);
+                this.isProcessing = false;
+                this.processNext();
+            } else if (message.type === 'ready') {
+                console.log('[JobManager] Worker thread is ready.');
+            }
+        });
+
+        this.worker.on('error', (err) => {
+            console.error(`[JobManager] Worker thread fatal error:`, err);
+            this.worker = null;
+            this.isProcessing = false;
+        });
+
+        this.worker.on('exit', (code) => {
+            if (code !== 0) {
+                console.error(`[JobManager] Worker exited with code ${code}`);
+            }
+            this.worker = null;
+            this.isProcessing = false;
+            // Redémarrer si nécessaire (le prochain processNext le fera)
+            if (JobModel.getNextJob()) {
+                this.processNext();
+            }
+        });
+
+        return this.worker;
     }
 
     /**
@@ -54,7 +125,7 @@ class JobManager {
     }
 
     /**
-     * Trigger the processing of the next available job
+     * Envoie le prochain job au worker persistant
      */
     public async processNext() {
         if (this.isProcessing) {
@@ -71,33 +142,17 @@ class JobManager {
         this.isProcessing = true;
 
         try {
-            console.log(`[JobManager] Starting job: ${nextJob.name} (ID: ${nextJob.id})`);
+            const worker = this.getOrCreateWorker();
+            console.log(`[JobManager] Sending job to worker: ${nextJob.name} (ID: ${nextJob.id})`);
 
             // Mark as in progress in DB
             JobModel.update(nextJob.id!, { phase: basicJobPhase.IN_PROGRESS });
 
-            const processor = this.processors.get(nextJob.type);
-            if (!processor) {
-                throw new Error(`No processor registered for job type: ${nextJob.type}`);
-            }
-
-            // Run the processor
-            await processor(nextJob);
-
-            // Job completed successfully -> Delete it
-            JobModel.delete(nextJob.id!);
-            console.log(`[JobManager] Job completed and removed: ${nextJob.name} (ID: ${nextJob.id})`);
+            worker.postMessage(nextJob);
 
         } catch (error) {
-            console.error(`[JobManager] Job failed: ${nextJob.name} (ID: ${nextJob.id})`, error);
-            // On failure, we might want to keep it in DB with a "FAILED" phase or just keep it as is.
-            // For now, we'll keep it so it doesn't loop infinitely if we don't have a retry logic.
-            // But we must stop processing or skip it.
-            // Refinement: mark as failed if we had a state, but here let's just stop this chain for safety.
-        } finally {
+            console.error(`[JobManager] Failed to send job to worker:`, error);
             this.isProcessing = false;
-            // Always try to pick up the next one
-            this.processNext();
         }
     }
 

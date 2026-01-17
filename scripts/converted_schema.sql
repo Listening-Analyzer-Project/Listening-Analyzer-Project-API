@@ -150,6 +150,7 @@ CREATE TABLE jobs (
   progress FLOAT NOT NULL DEFAULT 0,
   phase INTEGER NOT NULL DEFAULT 0,
   type INTEGER NOT NULL DEFAULT 0,
+  last_processed_id INTEGER NOT NULL DEFAULT 0,
   FOREIGN KEY (user_id) REFERENCES user(id)
 );
 

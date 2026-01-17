@@ -108,7 +108,7 @@ export interface IGeographicalRegion {
 // Listens
 // =======================
 export interface IListen {
-  id?: number;
+  id: number;
   ts: string;
   platform: string;
   ms_played: number;
@@ -179,6 +179,7 @@ export interface IJob {
   progress: number;
   phase: number;
   type: number;
+  last_processed_id: number;
 }
 
 // =======================

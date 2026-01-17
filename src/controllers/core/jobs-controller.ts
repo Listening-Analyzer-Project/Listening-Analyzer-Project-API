@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Job from '@/models/core/jobs-model';
 import { IJob } from '@/type';
+import jobManager from '@/service/job-manager';
 
 const getAllJobs = async (req: Request, res: Response) => {
     const jobs = await Job.getAll();
@@ -19,6 +20,7 @@ const createJob = async (req: Request, res: Response) => {
     const job: IJob = req.body;
     const result = await Job.create(job);
     res.status(201).json({ id: result.id });
+    jobManager.processNext();
 };
 
 const updateJob = async (req: Request, res: Response) => {
