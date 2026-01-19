@@ -58,6 +58,11 @@ const getEventsWithCategory = async (req: Request, res: Response) => {
   res.json(events);
 };
 
+const getEventCount = async (req: Request, res: Response) => {
+  const result = await Event.countAll();
+  res.json(result);
+};
+
 export default {
   getAllEvents,
   getEventById,
@@ -65,4 +70,5 @@ export default {
   updateEvent,
   deleteEvent,
   getEventsWithCategory,
+  getEventCount,
 };
