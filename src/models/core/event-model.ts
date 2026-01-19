@@ -35,6 +35,8 @@ const Event = {
   // Additional Methods
   // =======================
 
+  countAll: () => queryOne<{ count: number }>('SELECT COUNT(*) as count FROM events'),
+
   getAllWithCategory: ({
     user_id,
     category_id,
