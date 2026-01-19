@@ -5,44 +5,79 @@ import listenModel from '@/models/core/listen-model';
 
 export const importQueueService = {
     processImportJob: async (job: IJob) => {
-        // 1. On récupère le point de départ
-        const startId = job.last_processed_id || 0;
+        const allListens = listenModel.getAllbyUserId(job.user_id);
 
-        // 2. On récupère les données à partir de ce point (par lots/chunks)
-        // IMPORTANT : Toujours trier par ID pour la cohérence
-        const batchSize = 1000;
-        let hasMore = true;
-        let currentStartId = startId;
+        if (!allListens || allListens.length === 0) {
+            console.log(`[ImportQueue] No listens found for user ${job.user_id}`);
+            return;
+        }
 
-        while (hasMore) {
-            // Récupérer un lot de 1000 lignes (exemple)
-            const rows = listenModel.getRowsAfterId(currentStartId, batchSize, job.user_id);
+        // Sort by timestamp (chronological) to ensure order
+        allListens.sort((a, b) => {
+            if (a.ts < b.ts) return -1;
+            if (a.ts > b.ts) return 1;
+            return 0;
+        });
 
-            if (rows.length === 0) {
-                hasMore = false;
-                break;
-            } else {
-                // 3. Traitement du lot
-                for (const row of rows) {
-                    // Votre logique complexe de comparaison ici...
-                    // ...
-                    currentStartId = row.id;
-                }
+        let startIndex = 0;
+        if (job.phase === basicJobPhase.IN_PROGRESS && job.last_processed_id) {
+            const lastProcessedId = job.last_processed_id;
+            const foundIndex = allListens.findIndex(l => l.id === lastProcessedId);
+            if (foundIndex !== -1) {
+                startIndex = foundIndex + 1;
             }
-
-            // 4. Sauvegarde du checkpoint après chaque lot (Atome de travail)
-            // On ne le fait pas à chaque ligne pour ne pas saturer le disque
-            const progress = (currentStartId - startId) / batchSize; // Logique personnalisée pas bonne et fonctionnel
-
-            // Envoyer au Main Thread pour mise à jour DB
+        } else {
             if (parentPort) {
                 parentPort.postMessage({
                     type: 'progress',
-                    value: progress,
-                    lastId: currentStartId, // On transmet le nouvel index
+                    value: 0,
+                    lastId: 0,
                     phase: basicJobPhase.IN_PROGRESS
                 });
             }
         }
+
+        if (startIndex >= allListens.length) {
+            console.log(`[ImportQueue] Job ${job.id} already completed or no new items.`);
+            return;
+        }
+
+        console.log(`[ImportQueue] Starting job ${job.id} at index ${startIndex}/${allListens.length}`);
+
+        const BATCH_SIZE = 5000;
+        let currentIndex = startIndex;
+
+        while (currentIndex < allListens.length) {
+            const endIndex = Math.min(currentIndex + BATCH_SIZE, allListens.length);
+            const batch = allListens.slice(currentIndex, endIndex);
+
+            let lastProcessedId = 0;
+            for (let i = currentIndex; i < endIndex; i++) {
+                const currentListen = allListens[i];
+                const prevListen = i > 0 ? allListens[i - 1] : null;
+                const nextListen = i < allListens.length - 1 ? allListens[i + 1] : null;
+
+                // --- BUSINESS LOGIC START ---
+                // Comparaison avec prevListen et nextListen
+                // Determination de la raison de fin (skip, relire, etc.)
+                // listenModel.update(...) // Si nécessaire
+                // --- BUSINESS LOGIC END ---
+
+                lastProcessedId = currentListen.id;
+            }
+
+            currentIndex = endIndex;
+            const progress = Math.round((currentIndex / allListens.length) * 100);
+            console.log(`[ImportQueue] Job ${job.id} progress: ${progress}%`);
+            if (parentPort) {
+                parentPort.postMessage({
+                    type: 'progress',
+                    value: progress,
+                    lastId: lastProcessedId,
+                    phase: basicJobPhase.IN_PROGRESS
+                });
+            }
+        }
+        console.log(`[ImportQueue] Job ${job.id} finished processing.`);
     }
 };

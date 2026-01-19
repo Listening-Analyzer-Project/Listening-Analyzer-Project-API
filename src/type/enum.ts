@@ -27,3 +27,9 @@ export enum syncroStatus {
 export enum JobType {
     IMPORT = 0,
 }
+
+export enum ReasonType {
+    SKIP = 0,
+    REPEAT = 1,
+
+}

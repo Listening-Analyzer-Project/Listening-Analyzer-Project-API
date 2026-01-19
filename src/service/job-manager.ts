@@ -162,6 +162,16 @@ class JobManager {
     public updateProgress(jobId: number, progress: number, phase?: number) {
         JobModel.update(jobId, { progress, phase });
     }
+
+    /**
+     * Arrête proprement le worker persistant
+     */
+    public async shutdown() {
+        if (this.worker) {
+            await this.worker.terminate();
+            this.worker = null;
+        }
+    }
 }
 
 export default JobManager.getInstance();

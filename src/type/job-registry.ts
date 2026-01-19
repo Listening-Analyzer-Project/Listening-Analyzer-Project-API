@@ -8,7 +8,7 @@ export interface JobRegistryEntry {
 
 export const JOB_REGISTRY: Record<JobType, JobRegistryEntry> = {
     [JobType.IMPORT]: {
-        modulePath: './queue/import-queue',
+        modulePath: '@/service',
         serviceName: 'importQueueService',
         methodName: 'processImportJob'
     }
