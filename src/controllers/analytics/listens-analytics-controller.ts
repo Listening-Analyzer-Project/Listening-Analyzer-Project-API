@@ -16,8 +16,6 @@ const getListensAnalytics = (req: Request, res: Response) => {
     track_id: req.query.track_id?.toString(),
     is_valid: isValidParam === 'true' ? true : isValidParam === 'false' ? false : undefined,
     platform: req.query.platform?.toString(),
-    start_date: req.query.start_date?.toString(),
-    end_date: req.query.end_date?.toString(),
     search: req.query.search?.toString()
   };
 

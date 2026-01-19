@@ -31,6 +31,15 @@ const Event = {
     return { changes: info.changes };
   },
 
+  getAllbyUserId: (userId: number) => queryAll<IEvent>('SELECT * FROM events WHERE user_id = ?', [userId]),
+
+  deleteMany: (ids: number[]) => {
+    if (ids.length === 0) return { deletedCount: 0 };
+    const placeholders = ids.map(() => '?').join(',');
+    const info = runQuery(`DELETE FROM events WHERE id IN (${placeholders})`, ids);
+    return { deletedCount: info.changes };
+  },
+
   // =======================
   // Additional Methods
   // =======================

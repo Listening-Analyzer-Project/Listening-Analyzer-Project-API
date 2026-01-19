@@ -32,19 +32,16 @@ const partialIndexes = [
 * Supprime tous les index listés.
 */
 export const dropIndexes = () => {
-  console.log('Dropping all indexes...');
   const indexes = [...simpleIndexes, ...composedIndexes, ...partialIndexes];
   for (const idx of indexes) {
     runQuery(`DROP INDEX IF EXISTS ${idx.name}`);
   }
-  console.log('All indexes dropped.');
 };
 
 /**
 * Recrée tous les index listés.
 */
 export const createIndexes = () => {
-  console.log('Creating all indexes...');
   const indexes = [...simpleIndexes, ...composedIndexes];
   for (const idx of indexes) {
     runQuery(`CREATE INDEX IF NOT EXISTS ${idx.name} ON ${idx.table}(${idx.column})`);
@@ -52,5 +49,4 @@ export const createIndexes = () => {
   for (const idx of partialIndexes) {
     runQuery(`CREATE INDEX IF NOT EXISTS ${idx.name} ON ${idx.table}(${idx.column}) WHERE ${idx.condition}`);
   }
-  console.log('All indexes created.');
 };

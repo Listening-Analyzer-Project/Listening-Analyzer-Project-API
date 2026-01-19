@@ -3,13 +3,12 @@ import Tag from '@/models/core/tag-model';
 import { ITag } from '@/type';
 
 const getAllTags = async (req: Request, res: Response) => {
-    const tags = await Tag.getAll();
-    res.json(tags);
+  const tags = await Tag.getAll();
+  res.json(tags);
 };
 
 const getTagById = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const tag = await Tag.getById(id);
   if (!tag) throw { status: 404, message: 'Tag non trouvé' };
   res.json(tag);
@@ -23,16 +22,16 @@ const createTag = async (req: Request, res: Response) => {
 
 const updateTag = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const tagData: ITag = req.body;
   const updated = await Tag.update(id, tagData);
+  if (!updated) throw { status: 404, message: 'Tag non trouvé' };
   res.json(updated);
 };
 
 const deleteTag = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const deleted = await Tag.delete(id);
+  if (!deleted) throw { status: 404, message: 'Tag non trouvé' };
   res.json(deleted);
 };
 

@@ -23,7 +23,7 @@ const ArtistAnalytics = {
       params.push(...user_ids);
     }
 
-    const searchResult = buildSearchClause(search, ['primary_artist_name', 'country_name']);
+    const searchResult = buildSearchClause(search, ['all_artists', 'country_name']);
     if (searchResult.clause) {
       whereClauses.push(searchResult.clause);
       params.push(...searchResult.params);
@@ -32,18 +32,34 @@ const ArtistAnalytics = {
     const searchClause = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
     const sql = `
-      WITH artist_stats AS (
+      WITH exploded_listens AS (
         SELECT
-          primary_artist_id AS artist_id,
-          primary_artist_name AS artist_name,
+          al.listen_id,
+          al.is_valid,
+          al.user_id,
+          ta.artist_id,
+          ar.name AS artist_name,
+          c.name AS country_name,
+          al.genre_name,
+          al.sub_genre_name,
+          al.all_artists
+        FROM analytics_listens al
+        JOIN track_artists ta ON al.track_id = ta.track_id
+        JOIN artists ar ON ta.artist_id = ar.id
+        LEFT JOIN countries c ON ar.country_id = c.id
+      ),
+      artist_stats AS (
+        SELECT
+          artist_id,
+          artist_name,
           country_name,
           COALESCE(genre_name, 'multiple') AS genre_name,
           GROUP_CONCAT(DISTINCT sub_genre_name) AS sub_genres,
           SUM(CASE WHEN is_valid = 1 THEN 1 ELSE 0 END) AS valid_listens,
           SUM(CASE WHEN is_valid = 0 THEN 1 ELSE 0 END) AS invalid_listens
-        FROM analytics_listens
+        FROM exploded_listens
         ${searchClause}
-        GROUP BY primary_artist_id, primary_artist_name, country_name, genre_name
+        GROUP BY artist_id, artist_name, country_name, genre_name
         HAVING COUNT(listen_id) > 0
       ),
       ranked AS (

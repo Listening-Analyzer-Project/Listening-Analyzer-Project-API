@@ -9,7 +9,6 @@ const getAllUsers = async (req: Request, res: Response) => {
 
 const getUserById = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const user = await User.getById(id);
   if (!user) throw { status: 404, message: 'Utilisateur non trouvé' };
   res.json(user);
@@ -23,16 +22,16 @@ const createUser = async (req: Request, res: Response) => {
 
 const updateUser = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const userData: IUser = req.body;
   const updated = await User.update(id, userData);
+  if (!updated) throw { status: 404, message: 'Utilisateur non trouvé' };
   res.json(updated);
 };
 
 const deleteUser = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const deleted = await User.delete(id);
+  if (!deleted) throw { status: 404, message: 'Utilisateur non trouvé' };
   res.json(deleted);
 };
 

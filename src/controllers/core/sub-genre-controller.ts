@@ -9,7 +9,6 @@ const getAllSubGenres = async (req: Request, res: Response) => {
 
 const getSubGenreById = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const subGenre = await SubGenre.getById(id);
   if (!subGenre) throw { status: 404, message: 'Sous-genre non trouvé' };
   res.json(subGenre);
@@ -23,16 +22,16 @@ const createSubGenre = async (req: Request, res: Response) => {
 
 const updateSubGenre = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const subGenreData: ISubGenre = req.body;
   const updated = await SubGenre.update(id, subGenreData);
+  if (!updated) throw { status: 404, message: 'Sous-genre non trouvé' };
   res.json(updated);
 };
 
 const deleteSubGenre = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const deleted = await SubGenre.delete(id);
+  if (!deleted) throw { status: 404, message: 'Sous-genre non trouvé' };
   res.json(deleted);
 };
 

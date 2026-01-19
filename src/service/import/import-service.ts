@@ -1,4 +1,4 @@
-import { runTransaction} from '@/utils';
+import { runTransaction } from '@/utils';
 import { groupByTrack, groupedTitleAlbumPairs } from './helper/grouping-helper';
 import { findExistingTracks, checkExistsByColumn } from './helper/existing-check-helper';
 
@@ -58,7 +58,7 @@ export const importService = {
         insertedListens: 0,
       };
     }
- 
+
     // 1) Grouper par track (clé configurable)
     const groupsMap = groupByTrack(batch);
 
@@ -326,10 +326,16 @@ export const importService = {
         const trackId = newByKey[n.key];
         if (!trackId) continue;
 
-        for (const a of n.group.track.artists || []) {
+        (n.group.track.artists || []).forEach((a, index) => {
           const artId = artistsIdMap[normalize(a.name)];
-          if (artId) trackArtistsToCreate.push({ track_id: trackId, artist_id: artId, is_primary: 0 } as ITrackArtist);
-        }
+          if (artId) {
+            trackArtistsToCreate.push({
+              track_id: trackId,
+              artist_id: artId,
+              is_primary: index === 0 ? 1 : 0,
+            } as ITrackArtist);
+          }
+        });
 
         for (const tg of n.group.track.tags || []) {
           const tagId = tagsIdMap[normalize(tg)];

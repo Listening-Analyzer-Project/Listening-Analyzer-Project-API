@@ -9,7 +9,6 @@ const getAllArtists = async (req: Request, res: Response) => {
 
 const getArtistById = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const artist = await Artist.getById(id);
   if (!artist) throw { status: 404, message: 'Artiste non trouvé' };
   res.json(artist);
@@ -23,16 +22,16 @@ const createArtist = async (req: Request, res: Response) => {
 
 const updateArtist = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const artistData: IArtist = req.body;
   const updated = await Artist.update(id, artistData);
+  if (!updated) throw { status: 404, message: 'Artiste non trouvé' };
   res.json(updated);
 };
 
 const deleteArtist = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
-  if (!id) throw { status: 400, message: 'ID manquant' };
   const deleted = await Artist.delete(id);
+  if (!deleted) throw { status: 404, message: 'Artiste non trouvé' };
   res.json(deleted);
 };
 
