@@ -79,8 +79,3 @@ VALUES
 ('Event 1', 1, 1, '2024-10-01', '2024-10-01', 'Description 1'),
 ('Event 2', 2, 2, '2020-10-03', '2025-10-04', 'Description 2'),
 ('Event 3', 3, 3, '2024-10-05', '2024-11-20', 'Description 3');
-
-INSERT INTO jobs (name, user_id, progress, phase, type, last_processed_id) VALUES 
-('Import listens', 1, 0, 0, 0, 0),
-('Import listens', 2, 0, 0, 0, 0),
-('Import listens', 3, 0, 0, 0, 0);

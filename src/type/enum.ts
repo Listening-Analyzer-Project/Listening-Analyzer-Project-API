@@ -29,7 +29,9 @@ export enum JobType {
 }
 
 export enum ReasonType {
-    SKIP = 0,
-    REPEAT = 1,
-
+    SKIP = 'skip',
+    REPEAT = 'repeat_track',
+    REPEAT_LAST = 'replay_last_track',
+    END_TRACK = 'endtrack',
+    END_PLAY = 'endplay',
 }
