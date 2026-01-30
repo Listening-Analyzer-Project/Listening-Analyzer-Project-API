@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import User from '@/models/core/user-model';
 import ListenModel from '@/models/core/listen-model';
+import { syncroStatus } from '@/type';
 
 export const checkSynchroStatus = (strategy: string) => {
     return async (req: Request, res: Response, next: NextFunction) => {
@@ -26,7 +27,7 @@ export const checkSynchroStatus = (strategy: string) => {
             }
 
             const user = await User.getById(userId);
-            if (user && user.syncro_status === 1) {
+            if (user && user.syncro_status === syncroStatus.COMPUTING) {
                 return res.status(423).json({
                     status: 423,
                     message: 'Resource locked due to synchronization in progress. Please try again later.',
