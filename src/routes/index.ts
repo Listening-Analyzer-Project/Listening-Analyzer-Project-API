@@ -12,6 +12,7 @@ import genreRoute from './core/genre-route';
 import subGenreRoute from './core/sub-genre-route';
 import trackRoutes from './core/track-route';
 import listenRoute from './core/listen-route';
+import jobsRoutes from './core/jobs-route';
 
 import trackArtistRoutes from './relation/track-artist-route';
 import trackTagRoutes from './relation/track-tag-route';
@@ -43,6 +44,7 @@ router.use('/genres', genreRoute);
 router.use('/sub-genres', subGenreRoute);
 router.use('/tracks', trackRoutes);
 router.use('/listens', listenRoute);
+router.use('/jobs', jobsRoutes);
 
 // Routes de relations
 router.use('/track-artists', trackArtistRoutes);

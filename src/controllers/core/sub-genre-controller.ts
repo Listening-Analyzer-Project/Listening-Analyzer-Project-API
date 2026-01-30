@@ -24,14 +24,14 @@ const updateSubGenre = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const subGenreData: ISubGenre = req.body;
   const updated = await SubGenre.update(id, subGenreData);
-  if (!updated) throw { status: 404, message: 'Sous-genre non trouvé' };
+  if (updated.changes === 0) throw { status: 404, message: 'Sous-genre non trouvé' };
   res.json(updated);
 };
 
 const deleteSubGenre = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const deleted = await SubGenre.delete(id);
-  if (!deleted) throw { status: 404, message: 'Sous-genre non trouvé' };
+  if (deleted.changes === 0) throw { status: 404, message: 'Sous-genre non trouvé' };
   res.json(deleted);
 };
 

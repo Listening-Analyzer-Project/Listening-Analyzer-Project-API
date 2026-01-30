@@ -81,6 +81,11 @@ const ListensAnalytics = {
       params.push(...searchResult.params);
     }
 
+    let orderByClause = order_by;
+    if (order_by === 'ms_played') {
+      orderByClause = 'CAST(ms_played AS INTEGER)';
+    }
+
     const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
     const sql = `
@@ -91,14 +96,14 @@ const ListensAnalytics = {
       ),
       ranked AS (
         SELECT *,
-          ROW_NUMBER() OVER (ORDER BY ${order_by} ${direction}) AS rank_num
+          ROW_NUMBER() OVER (ORDER BY ${orderByClause} ${direction}) AS rank_num
         FROM listens_stats
       )
       SELECT
         ranked.*,
         (SELECT COUNT(*) FROM listens_stats) AS total_count
       FROM ranked
-      ORDER BY ${order_by} ${direction}
+      ORDER BY ${orderByClause} ${direction}
       LIMIT ? OFFSET ?;
     `;
 

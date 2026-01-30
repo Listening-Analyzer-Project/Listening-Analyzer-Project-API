@@ -144,6 +144,17 @@ CREATE TABLE tracks (
   FOREIGN KEY (sub_genre_id) REFERENCES sub_genres(id)
 );
 
+CREATE TABLE jobs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  user_id INTEGER NOT NULL,
+  progress FLOAT NOT NULL DEFAULT 0,
+  phase INTEGER NOT NULL DEFAULT 0,
+  type INTEGER NOT NULL DEFAULT 0,
+  last_processed_id INTEGER NOT NULL DEFAULT 0,
+  FOREIGN KEY (user_id) REFERENCES user(id)
+);
+
 -- ======================
 -- INDEX OPTIMISÉS (ANALYTIQUES)
 -- ======================

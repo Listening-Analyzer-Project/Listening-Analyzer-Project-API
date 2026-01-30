@@ -49,6 +49,19 @@ const Listen = {
     };
   },
 
+  updateReasonEndMany: (updates: { id: number; reason_end: string }[]) => {
+    if (!Array.isArray(updates) || updates.length === 0) {
+      return { changes: 0 };
+    }
+    runTransaction(() => {
+      const stmt = 'UPDATE listens SET reason_end = ? WHERE id = ?';
+      for (const update of updates) {
+        runQuery(stmt, [update.reason_end, update.id]);
+      }
+    });
+    return { changes: updates.length };
+  },
+
   update: (id: number, listen: IListen) => {
     const info = runQuery(
       `UPDATE listens
@@ -72,9 +85,16 @@ const Listen = {
     };
   },
 
-  getAllbyUserId: (userId: number) => { 
+  getAllbyUserId: (userId: number) => {
     return queryAll<IListen>('SELECT * FROM listens WHERE user_id = ?', [userId]);
-  }
+  },
+
+  getRowsAfterId: (id: number, limit: number, userId: number) => {
+    return queryAll<IListen>(
+      'SELECT * FROM listens WHERE id > ? AND user_id = ? ORDER BY id ASC LIMIT ?',
+      [id, userId, limit]
+    );
+  },
 };
 
 export default Listen;

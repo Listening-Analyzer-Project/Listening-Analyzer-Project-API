@@ -24,14 +24,14 @@ const updateAlbum = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const albumData: IAlbum = req.body;
   const updated = await Album.update(id, albumData);
-  if (!updated) throw { status: 404, message: 'Album non trouvé' };
+  if (updated.changes === 0) throw { status: 404, message: 'Album non trouvé' };
   res.json(updated);
 };
 
 const deleteAlbum = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const deleted = await Album.delete(id);
-  if (!deleted) throw { status: 404, message: 'Album non trouvé' };
+  if (deleted.changes === 0) throw { status: 404, message: 'Album non trouvé' };
   res.json(deleted);
 };
 

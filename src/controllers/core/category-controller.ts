@@ -24,14 +24,14 @@ const updateCategory = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const categoryData: ICategory = req.body;
   const updated = await Category.update(id, categoryData);
-  if (!updated) throw { status: 404, message: 'Catégorie non trouvée' };
+  if (updated.changes === 0) throw { status: 404, message: 'Catégorie non trouvée' };
   res.json(updated);
 };
 
 const deleteCategory = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const deleted = await Category.delete(id);
-  if (!deleted) throw { status: 404, message: 'Catégorie non trouvée' };
+  if (deleted.changes === 0) throw { status: 404, message: 'Catégorie non trouvée' };
   res.json(deleted);
 };
 

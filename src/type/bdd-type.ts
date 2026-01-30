@@ -109,7 +109,7 @@ export interface IGeographicalRegion {
 // Listens
 // =======================
 export interface IListen {
-  id?: number;
+  id: number;
   ts: string;
   platform: string;
   ms_played: number;
@@ -168,6 +168,19 @@ export interface ITrack {
   time_signature?: number;
   valence?: number;
   is_edited?: number; // 0 ou 1
+}
+
+// =======================
+// Jobs
+// =======================
+export interface IJob {
+  id?: number;
+  name: string;
+  user_id: number;
+  progress: number;
+  phase: number;
+  type: number;
+  last_processed_id: number;
 }
 
 // =======================

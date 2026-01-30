@@ -2,7 +2,7 @@ import Database from "better-sqlite3";
 import "dotenv/config";
 import fs from "fs";
 
-const db = new Database("listening.db");
+const db = new Database("db/listening.db");
 
 // Charger le schéma
 const schema = fs.readFileSync("./scripts/converted_schema.sql", "utf8");

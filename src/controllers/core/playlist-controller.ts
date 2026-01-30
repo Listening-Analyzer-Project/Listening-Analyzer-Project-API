@@ -24,14 +24,14 @@ const updatePlaylist = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const playlistData: Partial<IPlaylist> = req.body;
   const updatedPlaylist = await Playlist.update(id, playlistData);
-  if (!updatedPlaylist) throw { status: 404, message: 'Playlist non trouvée' };
+  if (updatedPlaylist.changes === 0) throw { status: 404, message: 'Playlist non trouvée' };
   res.json(updatedPlaylist);
 };
 
 const deletePlaylist = async (req: Request, res: Response) => {
   const id = Number(req.query.id);
   const deleted = await Playlist.delete(id);
-  if (!deleted) throw { status: 404, message: 'Playlist non trouvée' };
+  if (deleted.changes === 0) throw { status: 404, message: 'Playlist non trouvée' };
   res.json(deleted);
 };
 
